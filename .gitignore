@@ -63,3 +63,12 @@ server.log
  
 # Local per-office email credentials (do NOT commit real passwords)
 src/config/emailAccounts.json
+
+# Ignore large media files (use Git LFS or external hosting instead of committing media)
+*.mp4
+/public/*.mp4
+/public/homepageimage/*.mp4
+
+# Local IDE settings
+.vscode/
+.idea/

@@ -124,7 +124,16 @@ export default function ContactForm() {
     setStatus({ type: "loading", message: "Sending your message..." });
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_CONTACT_API || "/api/contact";
+      let apiUrl = process.env.NEXT_PUBLIC_CONTACT_API || "/api/contact";
+      // If the env var is a domain root (e.g. https://example.com), ensure the path points to /api/contact
+      try {
+        if (!apiUrl.endsWith("/api/contact")) {
+          // strip trailing slash then append path
+          apiUrl = apiUrl.replace(/\/$/, "") + "/api/contact";
+        }
+      } catch (e) {
+        apiUrl = "/api/contact";
+      }
 
       const res = await fetch(apiUrl, {
         method: "POST",

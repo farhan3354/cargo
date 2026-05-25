@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import nodemailer from 'nodemailer'
+import fs from 'fs'
+import path from 'path'
 import { getSmtpConfigForRecipient } from '@/lib/emailAccounts'
 
 const CORS_HEADERS = {
@@ -33,10 +35,33 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, error: 'Invalid CAPTCHA code. Please try again.' }, { status: 400 })
     }
 
-    const receiverEmail = to || process.env.CONTACT_RECEIVER_EMAIL || 'dubai@manaralkhair.com'
+    // Default receiver: corrected domain
+    const receiverEmail = to || process.env.CONTACT_RECEIVER_EMAIL || 'dubai@manarcargo.com'
+
+    // basic email format validator
+    const isValidEmail = (s?: string) => !!(s && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s))
+
+    if (!isValidEmail(receiverEmail)) {
+      console.error('[Contact API] invalid receiver email configured:', receiverEmail)
+      return NextResponse.json({ success: false, error: 'Server contact recipient is misconfigured. Please set CONTACT_RECEIVER_EMAIL.' }, { status: 500, headers: CORS_HEADERS })
+    }
 
     // prefer per-recipient SMTP config (env or local json)
     const perConfig = getSmtpConfigForRecipient(receiverEmail)
+
+    function logFailedMail(err: any, mailOptions: any) {
+      try {
+        const logDir = path.join(process.cwd(), 'src', 'tmp')
+        if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true })
+        const p = path.join(logDir, 'failed-emails.log')
+        fs.appendFileSync(
+          p,
+          JSON.stringify({ time: new Date().toISOString(), error: err?.message || err, rejected: err?.rejected || null, mailOptions }) + '\n',
+        )
+      } catch (e) {
+        console.warn('Failed to write failed email log', e)
+      }
+    }
 
     if (perConfig && perConfig.host && perConfig.user && perConfig.pass) {
       const transporter = nodemailer.createTransport({
@@ -46,9 +71,20 @@ export async function POST(req: Request) {
         auth: { user: perConfig.user, pass: perConfig.pass },
       })
 
+      // verify SMTP credentials early to return a helpful error instead of failing silently
+      try {
+        await transporter.verify()
+      } catch (err: any) {
+        console.error('[Contact API] SMTP verify failed', { host: perConfig.host, user: perConfig.user }, err?.message || err)
+        return NextResponse.json({ success: false, error: 'SMTP authentication failed. Check SMTP credentials.' }, { status: 502, headers: CORS_HEADERS })
+      }
+
       const webFrom = process.env.WEB_FROM_EMAIL || process.env.SMTP_FROM || 'fromweb@manarcargo.com'
       // Use the authenticated SMTP account as the envelope sender to satisfy SMTP sender verification.
-      const envelopeFrom = perConfig.user || perConfig.from || webFrom
+      let envelopeFrom = perConfig.user || perConfig.from || webFrom
+      if (!isValidEmail(envelopeFrom)) {
+        envelopeFrom = perConfig.user && isValidEmail(perConfig.user) ? perConfig.user : 'no-reply@manarcargo.com'
+      }
 
       const mailOptions = {
         from: `"MangoCargo Website" <${webFrom}>`,
@@ -76,7 +112,40 @@ export async function POST(req: Request) {
         `,
       }
 
-      await transporter.sendMail(mailOptions)
+      try {
+        await transporter.sendMail(mailOptions)
+      } catch (err: any) {
+        console.error('[Contact API] sendMail failed (per-recipient SMTP)', err)
+        logFailedMail(err, mailOptions)
+
+        // Try fallback to global SMTP if configured
+        if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
+          try {
+            const smtpHost = process.env.SMTP_HOST
+            const smtpPort = process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT) : 587
+            const smtpUser = process.env.SMTP_USER
+            const smtpPass = process.env.SMTP_PASS
+
+            const fallback = nodemailer.createTransport({
+              host: smtpHost,
+              port: smtpPort,
+              secure: smtpPort === 465,
+              auth: { user: smtpUser, pass: smtpPass },
+            })
+
+            await fallback.verify()
+            const fallbackOptions = { ...mailOptions, envelope: { from: smtpUser, to: receiverEmail } }
+            await fallback.sendMail(fallbackOptions)
+            console.log('[Contact API] fallback send via global SMTP succeeded')
+          } catch (err2: any) {
+            console.error('[Contact API] global fallback failed', err2)
+            logFailedMail(err2, mailOptions)
+            return NextResponse.json({ success: false, error: 'Failed to deliver mail to recipient. Please contact support.' }, { status: 502, headers: CORS_HEADERS })
+          }
+        } else {
+          return NextResponse.json({ success: false, error: 'Failed to deliver mail to recipient. Please contact support.' }, { status: 502, headers: CORS_HEADERS })
+        }
+      }
     } else if (process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS) {
       // fallback to global SMTP env
       const smtpHost = process.env.SMTP_HOST
@@ -91,9 +160,20 @@ export async function POST(req: Request) {
         auth: { user: smtpUser, pass: smtpPass },
       })
 
+      // verify global SMTP credentials to provide clearer diagnostics
+      try {
+        await transporter.verify()
+      } catch (err: any) {
+        console.error('[Contact API] SMTP verify failed', { host: smtpHost, user: smtpUser }, err?.message || err)
+        return NextResponse.json({ success: false, error: 'SMTP authentication failed. Check SMTP credentials.' }, { status: 502, headers: CORS_HEADERS })
+      }
+
       const webFrom = process.env.WEB_FROM_EMAIL || process.env.SMTP_FROM || 'fromweb@manarcargo.com'
       // For global SMTP, use the authenticated user as envelope sender to avoid "sender verify failed" errors
-      const envelopeFrom = smtpUser || process.env.SMTP_FROM || webFrom
+      let envelopeFrom = smtpUser || process.env.SMTP_FROM || webFrom
+      if (!isValidEmail(envelopeFrom)) {
+        envelopeFrom = smtpUser && isValidEmail(smtpUser) ? smtpUser : 'no-reply@manarcargo.com'
+      }
 
       const mailOptions = {
         from: `"MangoCargo Website" <${webFrom}>`,
@@ -107,7 +187,22 @@ export async function POST(req: Request) {
         html: `...`,
       }
 
-      await transporter.sendMail(mailOptions)
+      try {
+        await transporter.sendMail(mailOptions)
+      } catch (err: any) {
+        console.error('[Contact API] sendMail failed (global SMTP)', err)
+        // persist failure for later inspection
+        try {
+          const logDir = path.join(process.cwd(), 'src', 'tmp')
+          if (!fs.existsSync(logDir)) fs.mkdirSync(logDir, { recursive: true })
+          const p = path.join(logDir, 'failed-emails.log')
+          fs.appendFileSync(p, JSON.stringify({ time: new Date().toISOString(), error: err?.message || err, rejected: err?.rejected || null, mailOptions }) + '\n')
+        } catch (e) {
+          console.warn('Failed to write failed email log', e)
+        }
+
+        return NextResponse.json({ success: false, error: 'Failed to deliver mail to recipient. Please contact support.' }, { status: 502, headers: CORS_HEADERS })
+      }
     } else {
       console.log('=========================================')
       console.log('[Contact API] SMTP is not configured. To send real emails, set per-office env variables or create src/config/emailAccounts.json.')

@@ -1,0 +1,88 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap');
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: 'Work Sans', sans-serif;
+  --font-heading: var(--font-worksans), 'Work Sans', sans-serif;
+  --font-mono: var(--font-geist-mono);
+  
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: #FFFFFF;
+  --foreground: #110713;
+  --card: #FFFFFF;
+  --card-foreground: #110713;
+  --popover: #FFFFFF;
+  --popover-foreground: #110713;
+  --primary: #1F2288;
+  --primary-foreground: #FFFFFF;
+  --secondary: #F8F9FA;
+  --secondary-foreground: #1F2288;
+  --muted: #F9F7FA;
+  --muted-foreground: #66556B;
+  --accent: #1863DC;
+  --accent-foreground: #FFFFFF;
+  --destructive: #EF4444;
+  --border: #E5E7EB;
+  --input: #E5E7EB;
+  --ring: #1F2288;
+}
+
+.dark {
+  --background: #110713;
+  --foreground: #F8F9FA;
+  --card: #1A0D1E;
+  --card-foreground: #F8F9FA;
+  --popover: #1A0D1E;
+  --popover-foreground: #F8F9FA;
+  --primary: #A855F7;
+  --primary-foreground: #110713;
+  --secondary: #2D1B36;
+  --secondary-foreground: #A855F7;
+  --muted: #1F1124;
+  --muted-foreground: #A090A5;
+  --accent: #3B82F6;
+  --accent-foreground: #FFFFFF;
+  --destructive: #7F1D1D;
+  --border: #2D1B36;
+  --input: #2D1B36;
+  --ring: #A855F7;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Work Sans', sans-serif;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 700;
+  }
+}
+
+

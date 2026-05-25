@@ -1,0 +1,76 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Shipment model for tracking packages
+model Shipment {
+  id                String        @id @default(cuid())
+  trackingNumber    String        @unique
+  origin            String
+  destination       String
+  weight            Float
+  serviceType       String // domestic, international, express, freight
+  status            String // pending, picked_up, in_transit, out_for_delivery, delivered, cancelled
+  estimatedDelivery DateTime?
+  actualDelivery    DateTime?
+  senderName        String
+  senderEmail       String
+  senderPhone       String
+  recipientName     String
+  recipientEmail    String
+  recipientPhone    String
+  recipientAddress  String
+  notes             String?
+  customerId        String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  trackingEvents    TrackingEvent[]
+  customer          Customer?     @relation(fields: [customerId], references: [id])
+}
+
+// Tracking events for shipment timeline
+model TrackingEvent {
+  id          String    @id @default(cuid())
+  shipmentId  String
+  status      String
+  location    String
+  description String
+  timestamp   DateTime  @default(now())
+
+  shipment    Shipment  @relation(fields: [shipmentId], references: [id], onDelete: Cascade)
+
+  @@index([shipmentId])
+}
+
+// Contact form submissions
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  status    String   @default("pending") // pending, responded, closed
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Customer model for registered users
+model Customer {
+  id                String     @id @default(cuid())
+  email             String     @unique
+  name              String
+  phone             String?
+  address           String?
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+
+  shipments         Shipment[]
+}

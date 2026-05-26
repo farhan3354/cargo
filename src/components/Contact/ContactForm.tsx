@@ -135,6 +135,7 @@ export default function ContactForm() {
         apiUrl = "/api/contact";
       }
 
+      console.debug('Contact form POST ->', apiUrl)
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -147,6 +148,7 @@ export default function ContactForm() {
           captchaHash: captcha.hash,
         }),
       });
+      console.debug('Contact form response status', res.status, 'content-type', res.headers.get('content-type'))
 
       const text = await res.text();
       let data: any = null;

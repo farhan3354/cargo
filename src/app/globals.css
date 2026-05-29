@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700&display=swap');
+/* Google Font import removed for offline stability */
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -7,9 +7,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: 'Work Sans', sans-serif;
-  --font-heading: var(--font-worksans), 'Work Sans', sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --font-sans: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-heading: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
@@ -78,7 +78,7 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Work Sans', sans-serif;
+    font-family: var(--font-sans);
   }
 
   h1,
@@ -87,7 +87,7 @@
   h4,
   h5,
   h6 {
-    font-family: 'Work Sans', sans-serif;
+    font-family: var(--font-heading);
     font-weight: 700;
   }
 }

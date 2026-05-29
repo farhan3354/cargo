@@ -124,7 +124,7 @@ export default function ContactForm() {
     setStatus({ type: "loading", message: "Sending your message..." });
 
     try {
-      let apiUrl = "/api/contact";
+      let apiUrl = "https://cargo-bay.vercel.app/api/contact";
       // If the env var is a domain root (e.g. https://example.com), ensure the path points to /api/contact
       try {
         if (!apiUrl.endsWith("/api/contact")) {

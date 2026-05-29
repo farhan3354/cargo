@@ -1,26 +1,23 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Marcellus } from "next/font/google";
+// Fonts are handled via system stacks in offline mode
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
 
-const geistSans = Geist({
+// System font stacks for offline environments
+const geistSans = {
   variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+};
 
-const geistMono = Geist_Mono({
+const geistMono = {
   variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+};
 
-const marcellus = Marcellus({
-  weight: "400",
+const marcellus = {
   variable: "--font-marcellus",
-  subsets: ["latin"],
-});
+};
 
 export const metadata: Metadata = {
   title: "Manar Alkhair Cargo | Global Logistics & Shipping Solutions",

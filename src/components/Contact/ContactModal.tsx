@@ -158,8 +158,8 @@ export default function ContactModal({
     setStatus({ type: "loading", message: "Sending your message..." });
 
     try {
-      let apiUrl = "https://cargo-bay.vercel.app/api/contact";
-      
+      // Use relative path so it works in both dev and production
+      const apiUrl = "/api/contact";
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

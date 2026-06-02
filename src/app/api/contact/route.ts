@@ -208,6 +208,13 @@ export async function POST(req: Request) {
       console.log('[Contact API] SMTP is not configured. To send real emails, set per-office env variables or create src/config/emailAccounts.json.')
       console.log('[Contact API] Simulated Inquiry: ', { name, email, subject, message, receiverEmail })
       console.log('=========================================')
+
+      // Return a message that indicates success but warns about simulation in dev mode
+      return NextResponse.json({
+        success: true,
+        message: 'Your message has been processed (Simulated - SMTP not configured). To receive real emails, please configure SMTP credentials.',
+        simulated: true
+      }, { headers: CORS_HEADERS })
     }
 
     return NextResponse.json({ success: true, message: 'Your message has been sent successfully!' }, { headers: CORS_HEADERS })

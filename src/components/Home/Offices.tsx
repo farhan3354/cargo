@@ -58,6 +58,60 @@ const offices = [
     location: "Jigjiga, Ethiopia",
     country: "Ethiopia",
   },
+  {
+    city: "Sharjah to Tanzania",
+    desc: "Dedicated cargo route from Sharjah to Dar es Salaam, Tanzania, ensuring efficient shipping and customs clearance.",
+    img: "/officesimage/offices6.png",
+    phones: ["+971 58 8627018","+971 52 8652516"],
+    email: "sharjah@manarcargo.com",
+    location: "Sharjah, UAE / Tanzania",
+    country: "UAE/Tanzania",
+  },
+  {
+    city: "Sharjah to South Sudan",
+    desc: "Reliable logistics link from Sharjah to Jubba, South Sudan, providing secure handling and timely deliveries.",
+    img: "/officesimage/offices10.png",
+    phones: ["+971 52 8652516","+971 58 8627018"],
+    email: "sharjah@manarcargo.com",
+    location: "Sharjah, UAE / South Sudan",
+    country: "UAE/South Sudan",
+  },
+  {
+    city: "Sharjah to Kenya",
+    desc: "Seamless shipping services from Sharjah to Nairobi, Kenya, offering end-to-end cargo solutions for your business.",
+    img: "/officesimage/offices9.png",
+    phones: ["+971 58 8627018","+971 52 8652516"],
+    email: "sharjah@manarcargo.com",
+    location: "Sharjah, UAE / Kenya",
+    country: "UAE/Kenya",
+  },
+  {
+    city: "Sharjah to Kinshasa",
+    desc: "Direct cargo route from Sharjah to Kinshasa, DRC, with reliable clearance and door-to-door delivery services.",
+    img: "/officesimage/offices5.png",
+    phones: ["+971 58 8627018","+971 52 8652516"],
+    email: "sharjah@manarcargo.com",
+    location: "Sharjah, UAE / Kinshasa, DRC",
+    country: "UAE/DRC",
+  },
+  {
+    city: "Sharjah to Lusaka",
+    desc: "Efficient cargo shipping from Sharjah to Lusaka, Zambia, ensuring safe and timely freight delivery.",
+    img: "/officesimage/office8.png",
+    phones: ["+971 58 8627018","+971 52 8652516"],
+    email: "sharjah@manarcargo.com",
+    location: "Sharjah, UAE / Lusaka, Zambia",
+    country: "UAE/Zambia",
+  },
+  {
+    city: "Sharjah to Zanzibar",
+    desc: "Dedicated shipping route from Sharjah to Zanzibar, Tanzania, with reliable handling and island-specific logistics.",
+    img: "/officesimage/offices7.png",
+    phones: ["+971 58 8627018","+971 52 8652516"],
+    email: "sharjah@manarcargo.com",
+    location: "Sharjah, UAE / Zanzibar",
+    country: "UAE/Tanzania",
+  },
 ];
 
 const globalEmails = ["Manaralkhaircargo@gmail.com", "Info@Manarcargo.com"];
@@ -113,7 +167,7 @@ export default function Offices({
               key={i}
               className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-[#E5E7EB]"
             >
-              <div className="relative h-48 md:h-56 overflow-hidden">
+              <div className="relative h-40 md:h-44 overflow-hidden">
                 <img
                   src={office.img}
                   alt={office.city}
@@ -127,7 +181,7 @@ export default function Offices({
                 </div>
               </div>
 
-              <div className="p-5 md:p-6 space-y-4">
+              <div className="p-4 md:p-5 space-y-3">
                 <div className="flex items-center gap-2">
                   <MapPin className="w-5 h-5 text-[#1F2288]" />
                   <h4 className="text-lg md:text-xl font-bold text-[#110713]">
@@ -151,9 +205,7 @@ export default function Offices({
                     <div key={pi} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Phone className="w-4 h-4 text-[#1F2288]" />
-                        <span className="text-sm font-medium text-[#110713]">
-                          {phone}
-                        </span>
+                        <span className="text-sm font-medium text-[#110713]">{phone.trim()}</span>
                       </div>
                     </div>
                   ))}

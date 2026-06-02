@@ -22,14 +22,16 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen w-full overflow-hidden flex items-center pt-0">
       
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 bg-slate-900">
         <video
           key={currentVideoIndex}
           autoPlay
           muted
           playsInline
+          preload="auto"
           onEnded={handleVideoEnded}
-          className="w-full h-full object-cover"
+          onError={handleVideoEnded} // Skip if video fails to load
+          className="w-full h-full object-cover transition-opacity duration-1000"
         >
           <source src={bannerVideos[currentVideoIndex]} type="video/mp4" />
         </video>

@@ -3,7 +3,9 @@
   "version": "0.2.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "prebuild": "node scripts/clean-next.js",
+    "dev": "next dev --webpack -p 3000",
+    "dev:turbo": "next dev --turbopack -p 3000",
     "build": "next build && node scripts/copy-assets.js",
     "start": "NODE_ENV=production bun .next/standalone/server.js 2>&1 | tee server.log",
     "lint": "eslint .",

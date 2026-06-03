@@ -153,13 +153,41 @@ export default function ContactModal({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // const getContactApiUrl = () => {
+  //   const rawBackendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.trim();
+  //   const fallbackBase =
+  //     process.env.NODE_ENV === "development" ? "http://localhost:4000" : "";
+  //   const baseUrl = rawBackendUrl || fallbackBase;
+
+  //   if (!baseUrl) {
+  //     return "/api/contact/form";
+  //   }
+
+  //   if (/^https?:\/\//i.test(baseUrl)) {
+  //     return `${baseUrl.replace(/\/$/, "")}/api/contact/form`;
+  //   }
+
+  //   const protocol = /^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(baseUrl)
+  //     ? "http"
+  //     : "https";
+
+  //   return `${protocol}://${baseUrl.replace(/\/$/, "")}/api/contact/form`;
+  // };
+  const getContactApiUrl = () => {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL?.trim() ||
+      "https://jobzy-api.rentubuy.com";
+
+    return `${baseUrl}/api/contact/form`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus({ type: "loading", message: "Sending your message..." });
-
+      const apiUrl = getContactApiUrl();
+// console.log("API URL:", apiUrl);
     try {
-      // Use relative path so it works in both dev and production
-      const apiUrl = "/api/contact";
+      const apiUrl = getContactApiUrl();
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -168,6 +196,7 @@ export default function ContactModal({
           email: formData.email,
           subject: formData.subject,
           message: formData.message,
+          to: recipient,
           captchaInput: formData.captchaInput,
           captchaHash: captcha.hash,
         }),
@@ -198,9 +227,21 @@ export default function ContactModal({
         return;
       }
 
+      if (data?.simulated) {
+        setStatus({
+          type: "error",
+          message:
+            data.message ||
+            "Email was not delivered because SMTP is not configured on the server.",
+        });
+        refreshCaptcha();
+        return;
+      }
+
       setStatus({
         type: "success",
-        message: "Thank you! Your message has been sent successfully.",
+        message:
+          data.message || "Thank you! Your message has been sent successfully.",
       });
 
       setFormData({
@@ -217,7 +258,6 @@ export default function ContactModal({
         onClose();
         setStatus({ type: "idle", message: "" });
       }, 3000);
-
     } catch (err: any) {
       console.error(err);
       setStatus({
@@ -243,8 +283,8 @@ export default function ContactModal({
                 {title}
               </DialogTitle>
               <DialogDescription className="text-white/70 text-base">
-                {recipient 
-                  ? `Sending message to: ${recipient}` 
+                {recipient
+                  ? `Sending message to: ${recipient}`
                   : "Fill out the form below to get in touch with our team."}
               </DialogDescription>
             </DialogHeader>
@@ -261,7 +301,9 @@ export default function ContactModal({
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid md:grid-cols-2 gap-5">
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-700">Full Name</label>
+                  <label className="text-sm font-semibold text-slate-700">
+                    Full Name
+                  </label>
                   <input
                     type="text"
                     name="name"
@@ -274,7 +316,9 @@ export default function ContactModal({
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-sm font-semibold text-slate-700">Email Address</label>
+                  <label className="text-sm font-semibold text-slate-700">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -288,7 +332,9 @@ export default function ContactModal({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">Subject</label>
+                <label className="text-sm font-semibold text-slate-700">
+                  Subject
+                </label>
                 <input
                   type="text"
                   name="subject"
@@ -301,7 +347,9 @@ export default function ContactModal({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">Message</label>
+                <label className="text-sm font-semibold text-slate-700">
+                  Message
+                </label>
                 <textarea
                   name="message"
                   value={formData.message}

@@ -6,6 +6,7 @@ try {
   const srcStatic = path.join(__dirname, '../.next/static');
   const destStatic = path.join(__dirname, '../.next/standalone/.next/static');
   if (fs.existsSync(srcStatic)) {
+    fs.rmSync(destStatic, { recursive: true, force: true });
     fs.mkdirSync(path.dirname(destStatic), { recursive: true });
     fs.cpSync(srcStatic, destStatic, { recursive: true });
     console.log('Successfully copied .next/static to .next/standalone/.next/static');
@@ -15,6 +16,7 @@ try {
   const srcPublic = path.join(__dirname, '../public');
   const destPublic = path.join(__dirname, '../.next/standalone/public');
   if (fs.existsSync(srcPublic)) {
+    fs.rmSync(destPublic, { recursive: true, force: true });
     fs.mkdirSync(path.dirname(destPublic), { recursive: true });
     fs.cpSync(srcPublic, destPublic, { recursive: true });
     console.log('Successfully copied public to .next/standalone/public');

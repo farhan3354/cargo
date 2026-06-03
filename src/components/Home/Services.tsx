@@ -1,6 +1,6 @@
-"use client"
-import React from 'react'
-import Link from 'next/link'
+"use client";
+import React from "react";
+import Link from "next/link";
 
 // const services = [
 //   {
@@ -51,41 +51,41 @@ import Link from 'next/link'
 // ]
 const services = [
   {
-    title: 'Domestic Cargo',
-    desc: 'Reliable cargo delivery across the UAE with safe and timely handling.',
-    img: '/homepageimage/services1.jfif',
+    title: "Domestic Cargo",
+    desc: "Reliable cargo delivery across the UAE with safe and timely handling.",
+    img: "/homepageimage/services1.jfif",
   },
   {
-    title: 'International Cargo',
-    desc: 'Worldwide shipping solutions with smooth customs and tracking.',
-   img: '/servicesabout.jfif' },
-  {
-    title: 'Air Freight',
-    desc: 'Fast air cargo services for urgent international deliveries.',
-    img: '/homepageimage/services3.jfif',
+    title: "International Cargo",
+    desc: "Worldwide shipping solutions with smooth customs and tracking.",
+    img: "/servicesabout.jfif",
   },
   {
-    title: 'Sea Freight',
-    desc: 'Affordable sea freight for large and commercial shipments.',
-    img: '/homepageimage/services4.jfif',
+    title: "Air Freight",
+    desc: "Fast air cargo services for urgent international deliveries.",
+    img: "/homepageimage/services3.jfif",
   },
   {
-    title: 'Door to Door Delivery',
-    desc: 'Complete pickup and delivery service from sender to receiver.',
-    img: '/homepageimage/services5.jfif',
+    title: "Sea Freight",
+    desc: "Affordable sea freight for large and commercial shipments.",
+    img: "/homepageimage/services4.jfif",
   },
   {
-    title: 'Customs Clearance',
-    desc: 'Quick documentation and customs support for hassle-free shipping.',
-    img: '/homepageimage/services.jfif',
+    title: "Door to Door Delivery",
+    desc: "Complete pickup and delivery service from sender to receiver.",
+    img: "/homepageimage/services5.jfif",
   },
-]
+  {
+    title: "Customs Clearance",
+    desc: "Quick documentation and customs support for hassle-free shipping.",
+    img: "/homepageimage/services.jfif",
+  },
+];
 
 export default function Services() {
   return (
     <section className="py-4 bg-white">
       <div className="max-w-[1240px] mx-auto px-5">
-
         <div className="w-20 h-[3px] bg-[#1F2288] rounded-full mb-5"></div>
         <p className="text-[#1F2288] font-semibold uppercase tracking-[3px] text-sm mb-3">
           Our Services
@@ -106,14 +106,15 @@ export default function Services() {
                 <img
                   src={service.img}
                   alt={service.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover group-hover:scale-110 transition duration-500"
                 />
               </div>
 
               {/* Content */}
               <div className="p-7">
-                <span className="text-3xl font-bold text-[#1F2288]">
-                </span>
+                <span className="text-3xl font-bold text-[#1F2288]"></span>
 
                 <h4 className="text-2xl font-semibold text-[#110713] mt-3 mb-3">
                   {service.title}
@@ -135,5 +136,5 @@ export default function Services() {
         </div>
       </div>
     </section>
-  )
+  );
 }

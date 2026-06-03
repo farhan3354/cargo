@@ -119,15 +119,40 @@ export default function ContactForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // const getContactApiUrl = () => {
+  //   const rawBackendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.trim();
+  //   const fallbackBase =
+  //     process.env.NODE_ENV === "development" ? "http://localhost:4000" : "";
+  //   const baseUrl = rawBackendUrl || fallbackBase;
+
+  //   if (!baseUrl) {
+  //     return "/api/contact/form";
+  //   }
+
+  //   if (/^https?:\/\//i.test(baseUrl)) {
+  //     return `${baseUrl.replace(/\/$/, "")}/api/contact/form`;
+  //   }
+
+  //   const protocol = /^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(baseUrl)
+  //     ? "http"
+  //     : "https";
+
+  //   return `${protocol}://${baseUrl.replace(/\/$/, "")}/api/contact/form`;
+  // };
+  const getContactApiUrl = () => {
+    const baseUrl ="https://jobzy-api.rentubuy.com";
+
+    return `${baseUrl}/api/contact/form`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus({ type: "loading", message: "Sending your message..." });
 
     try {
-      // Use relative path so it works in both dev and production
-      const apiUrl = "/api/contact";
+      const apiUrl = getContactApiUrl();
 
-      console.debug('Contact form POST ->', apiUrl)
+      // console.debug("Contact form POST ->", apiUrl);
       const res = await fetch(apiUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -140,7 +165,12 @@ export default function ContactForm() {
           captchaHash: captcha.hash,
         }),
       });
-      console.debug('Contact form response status', res.status, 'content-type', res.headers.get('content-type'))
+      console.debug(
+        "Contact form response status",
+        res.status,
+        "content-type",
+        res.headers.get("content-type"),
+      );
 
       const text = await res.text();
       let data: any = null;
@@ -169,9 +199,21 @@ export default function ContactForm() {
         return;
       }
 
+      if (data?.simulated) {
+        setStatus({
+          type: "error",
+          message:
+            data.message ||
+            "Email was not delivered because SMTP is not configured on the server.",
+        });
+        refreshCaptcha();
+        return;
+      }
+
       setStatus({
         type: "success",
         message:
+          data.message ||
           "Thank you! Your message has been sent successfully. We will get back to you shortly.",
       });
 

@@ -7,7 +7,7 @@ const offices = [
   {
     city: "Dubai Head Office",
     desc: "Our main office in Dubai is available for cargo inquiries, shipment bookings, and customer support.",
-    img: "/officesimage/Gemini_Generated_Image_55i1jg55i1jg55i1.png",
+    img: "/officesimage/Gemini_Generated_Image_r5vo6sr5vo6sr5vo.png",
     phones: ["+971 52 397 9396", "+971 45 476 860"],
     email: "dubai@manarcargo.com",
     location: "Dubai, UAE",
@@ -16,7 +16,7 @@ const offices = [
   {
     city: "Hargeisa Office",
     desc: "Our Hargeisa branch supports cargo delivery, customer assistance, and shipment tracking across Somaliland.",
-    img: "/officesimage/Gemini_Generated_Image_cijc7pcijc7pcijc.png",
+    img: "/officesimage/Gemini_Generated_Image_x4kj19x4kj19x4kj.png",
     phones: ["+252 63 7448552", "+252 63 8880742"],
     email: "hargeisa@manarcargo.com",
     location: "Hargeisa, Somaliland",
@@ -25,7 +25,7 @@ const offices = [
   {
     city: "Wajaale Office",
     desc: "Serving customers with reliable cargo handling and logistics support in Wajaale.",
-    img: "/officesimage/Gemini_Generated_Image_kmjn2qkmjn2qkmjn.png",
+    img: "/officesimage/Gemini_Generated_Image_cijc7pcijc7pcijc.png",
     phones: ["+252 63 7448552", "+252 63 4426732"],
     email: "wajaale@manarcargo.com",
     location: "Wajaale, Somaliland",
@@ -34,7 +34,7 @@ const offices = [
   {
     city: "Mogadishu Office",
     desc: "Our Mogadishu office provides fast cargo coordination and shipment support for Somalia customers.",
-    img: "/officesimage/Gemini_Generated_Image_r5vo6sr5vo6sr5vo.png",
+    img: "/officesimage/Gemini_Generated_Image_kmjn2qkmjn2qkmjn.png",
     phones: ["+252 614431212", "+252 610881212"],
     email: "mogadishu@manarcargo.com",
     location: "Mogadishu, Somalia",
@@ -43,7 +43,7 @@ const offices = [
   {
     city: "Bosaso Office",
     desc: "Reliable cargo services and customer support for shipments through our Bosaso branch.",
-    img: "/officesimage/Gemini_Generated_Image_x4kj19x4kj19x4kj.png",
+    img: "/officesimage/Gemini_Generated_Image_55i1jg55i1jg55i1.png",
     phones: ["+252 904000029", "+252 904000036"],
     email: "bosaso@manarcargo.com",
     location: "Bosaso, Somalia",
@@ -62,7 +62,7 @@ const offices = [
     city: "Sharjah to Tanzania",
     desc: "Dedicated cargo route from Sharjah to Dar es Salaam, Tanzania, ensuring efficient shipping and customs clearance.",
     img: "/officesimage/offices6.png",
-    phones: ["+971 58 8627018","+971 52 8652516"],
+    phones: ["+971 58 8627018", "+971 52 8652516"],
     email: "sharjah@manarcargo.com",
     location: "Sharjah, UAE / Tanzania",
     country: "UAE/Tanzania",
@@ -71,7 +71,7 @@ const offices = [
     city: "Sharjah to South Sudan",
     desc: "Reliable logistics link from Sharjah to Jubba, South Sudan, providing secure handling and timely deliveries.",
     img: "/officesimage/offices10.png",
-    phones: ["+971 52 8652516","+971 58 8627018"],
+    phones: ["+971 52 8652516", "+971 58 8627018"],
     email: "sharjah@manarcargo.com",
     location: "Sharjah, UAE / South Sudan",
     country: "UAE/South Sudan",
@@ -80,7 +80,7 @@ const offices = [
     city: "Sharjah to Kenya",
     desc: "Seamless shipping services from Sharjah to Nairobi, Kenya, offering end-to-end cargo solutions for your business.",
     img: "/officesimage/offices9.png",
-    phones: ["+971 58 8627018","+971 52 8652516"],
+    phones: ["+971 58 8627018", "+971 52 8652516"],
     email: "sharjah@manarcargo.com",
     location: "Sharjah, UAE / Kenya",
     country: "UAE/Kenya",
@@ -89,7 +89,7 @@ const offices = [
     city: "Sharjah to Kinshasa",
     desc: "Direct cargo route from Sharjah to Kinshasa, DRC, with reliable clearance and door-to-door delivery services.",
     img: "/officesimage/offices5.png",
-    phones: ["+971 58 8627018","+971 52 8652516"],
+    phones: ["+971 58 8627018", "+971 52 8652516"],
     email: "sharjah@manarcargo.com",
     location: "Sharjah, UAE / Kinshasa, DRC",
     country: "UAE/DRC",
@@ -98,7 +98,7 @@ const offices = [
     city: "Sharjah to Lusaka",
     desc: "Efficient cargo shipping from Sharjah to Lusaka, Zambia, ensuring safe and timely freight delivery.",
     img: "/officesimage/office8.png",
-    phones: ["+971 58 8627018","+971 52 8652516"],
+    phones: ["+971 58 8627018", "+971 52 8652516"],
     email: "sharjah@manarcargo.com",
     location: "Sharjah, UAE / Lusaka, Zambia",
     country: "UAE/Zambia",
@@ -107,10 +107,28 @@ const offices = [
     city: "Sharjah to Zanzibar",
     desc: "Dedicated shipping route from Sharjah to Zanzibar, Tanzania, with reliable handling and island-specific logistics.",
     img: "/officesimage/offices7.png",
-    phones: ["+971 58 8627018","+971 52 8652516"],
+    phones: ["+971 58 8627018", "+971 52 8652516"],
     email: "sharjah@manarcargo.com",
     location: "Sharjah, UAE / Zanzibar",
     country: "UAE/Tanzania",
+  },
+  {
+    city: "Dubai to Lusaka",
+    desc: "Dedicated shipping route from Dubai to Lusaka, Zambia, with reliable handling and island-specific logistics.",
+    img: "/officesimage/office11.png",
+    phones: ["+971 58 8627018", "+971 52 8652516"],
+    email: "dubai@manarcargo.com",
+    location: "Dubai, UAE / Lusaka, Zambia",
+    country: "UAE/Zambia",
+  },
+  {
+    city: "Dubai to Juba",
+    desc: "Dedicated shipping route from Dubai to Juba, South Sudan, with reliable handling and island-specific logistics.",
+    img: "/officesimage/offices8.png",
+    phones: ["+971 58 8627018", "+971 52 8652516"],
+    email: "dubai@manarcargo.com",
+    location: "Dubai, UAE / Juba, South Sudan",
+    country: "UAE/South Sudan",
   },
 ];
 
@@ -205,7 +223,9 @@ export default function Offices({
                     <div key={pi} className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <Phone className="w-4 h-4 text-[#1F2288]" />
-                        <span className="text-sm font-medium text-[#110713]">{phone.trim()}</span>
+                        <span className="text-sm font-medium text-[#110713]">
+                          {phone.trim()}
+                        </span>
                       </div>
                     </div>
                   ))}

@@ -68,7 +68,6 @@ export default function ContactModal({
     setFormData((prev) => ({ ...prev, captchaInput: "" }));
   }, []);
 
-  // Sync recipient with subject or message if needed
   useEffect(() => {
     if (recipient && isOpen) {
       setFormData((prev) => ({
@@ -78,7 +77,6 @@ export default function ContactModal({
     }
   }, [recipient, isOpen]);
 
-  // Draw distorted characters with noise lines and dots on a canvas
   useEffect(() => {
     if (!isOpen) return;
     const canvas = canvasRef.current;
@@ -86,14 +84,11 @@ export default function ContactModal({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    // Clear canvas
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Draw background
     ctx.fillStyle = "#f1f5f9";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw random noise lines
     for (let i = 0; i < 5; i++) {
       ctx.strokeStyle = ["#1F2288", "#f97316", "#3b82f6", "#94a3b8"][
         Math.floor(Math.random() * 4)
@@ -105,7 +100,6 @@ export default function ContactModal({
       ctx.stroke();
     }
 
-    // Draw random noise dots
     for (let i = 0; i < 30; i++) {
       ctx.fillStyle = "#cbd5e1";
       ctx.beginPath();
@@ -119,7 +113,6 @@ export default function ContactModal({
       ctx.fill();
     }
 
-    // Draw stylized text characters
     ctx.font = "bold 24px 'Work Sans', system-ui, sans-serif";
     ctx.textBaseline = "middle";
 
@@ -131,13 +124,11 @@ export default function ContactModal({
 
       ctx.save();
 
-      // Calculate char position with slight randomness
       const x = 12 + i * 22 + Math.random() * 3;
       const y = canvas.height / 2 + (Math.random() * 4 - 2);
 
       ctx.translate(x, y);
 
-      // Random rotation
       const angle = ((Math.random() * 20 - 10) * Math.PI) / 180;
       ctx.rotate(angle);
 
@@ -153,26 +144,6 @@ export default function ContactModal({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const getContactApiUrl = () => {
-  //   const rawBackendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.trim();
-  //   const fallbackBase =
-  //     process.env.NODE_ENV === "development" ? "http://localhost:4000" : "";
-  //   const baseUrl = rawBackendUrl || fallbackBase;
-
-  //   if (!baseUrl) {
-  //     return "/api/contact/form";
-  //   }
-
-  //   if (/^https?:\/\//i.test(baseUrl)) {
-  //     return `${baseUrl.replace(/\/$/, "")}/api/contact/form`;
-  //   }
-
-  //   const protocol = /^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(baseUrl)
-  //     ? "http"
-  //     : "https";
-
-  //   return `${protocol}://${baseUrl.replace(/\/$/, "")}/api/contact/form`;
-  // };
   const getContactApiUrl = () => {
     const baseUrl =
       process.env.NEXT_PUBLIC_BACKEND_URL?.trim() ||
@@ -184,8 +155,7 @@ export default function ContactModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus({ type: "loading", message: "Sending your message..." });
-      const apiUrl = getContactApiUrl();
-// console.log("API URL:", apiUrl);
+    const apiUrl = getContactApiUrl();
     try {
       const apiUrl = getContactApiUrl();
       const res = await fetch(apiUrl, {

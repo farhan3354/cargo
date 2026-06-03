@@ -119,27 +119,7 @@ export default function ContactForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // const getContactApiUrl = () => {
-  //   const rawBackendUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.trim();
-  //   const fallbackBase =
-  //     process.env.NODE_ENV === "development" ? "http://localhost:4000" : "";
-  //   const baseUrl = rawBackendUrl || fallbackBase;
-
-  //   if (!baseUrl) {
-  //     return "/api/contact/form";
-  //   }
-
-  //   if (/^https?:\/\//i.test(baseUrl)) {
-  //     return `${baseUrl.replace(/\/$/, "")}/api/contact/form`;
-  //   }
-
-  //   const protocol = /^(localhost|127\.0\.0\.1)(:\d+)?$/i.test(baseUrl)
-  //     ? "http"
-  //     : "https";
-
-  //   return `${protocol}://${baseUrl.replace(/\/$/, "")}/api/contact/form`;
-  // };
-  const getContactApiUrl = () => {
+const getContactApiUrl = () => {
     const baseUrl ="https://jobzy-api.rentubuy.com";
 
     return `${baseUrl}/api/contact/form`;

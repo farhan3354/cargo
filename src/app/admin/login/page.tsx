@@ -14,8 +14,16 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setEmailTouched(true);
+    setPasswordTouched(true);
+    
+    if (!email || !password) return;
+
     setIsLoading(true);
     try {
       console.log('Submitting admin login', { email, password });
@@ -69,10 +77,23 @@ export default function AdminLogin() {
                 placeholder="admin@manarcargo.com" 
                 required 
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-12 focus:ring-blue-500 focus:border-blue-500 rounded-xl"
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setEmailTouched(true);
+                }}
+                onBlur={() => setEmailTouched(true)}
+                className={`pl-10 bg-white/5 text-white placeholder:text-gray-500 h-12 rounded-xl transition-all ${
+                  emailTouched && !email 
+                    ? 'border-red-500 focus:border-red-500 focus:ring-red-500' 
+                    : 'border-white/10 focus:ring-blue-500 focus:border-blue-500'
+                }`}
               />
             </div>
+            {emailTouched && !email && (
+              <p className="text-red-400 text-sm mt-1 animate-in fade-in slide-in-from-top-1">
+                Email is required
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -85,16 +106,29 @@ export default function AdminLogin() {
                 placeholder="••••••••" 
                 required 
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="pl-10 bg-white/5 border-white/10 text-white placeholder:text-gray-500 h-12 focus:ring-blue-500 focus:border-blue-500 rounded-xl"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setPasswordTouched(true);
+                }}
+                onBlur={() => setPasswordTouched(true)}
+                className={`pl-10 bg-white/5 text-white placeholder:text-gray-500 h-12 rounded-xl transition-all ${
+                  passwordTouched && !password 
+                    ? 'border-red-500 focus:border-red-500 focus:ring-red-500' 
+                    : 'border-white/10 focus:ring-blue-500 focus:border-blue-500'
+                }`}
               />
             </div>
+            {passwordTouched && !password && (
+              <p className="text-red-400 text-sm mt-1 animate-in fade-in slide-in-from-top-1">
+                Password is required
+              </p>
+            )}
           </div>
 
           <Button 
             type="submit" 
-            disabled={isLoading}
-            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/30 mt-4 text-md"
+            disabled={isLoading || (emailTouched && !email) || (passwordTouched && !password)}
+            className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-all shadow-lg shadow-blue-600/30 mt-4 text-md disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Sign In"}
           </Button>

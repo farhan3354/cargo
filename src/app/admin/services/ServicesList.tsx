@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/Admin/ConfirmDialog";
 import EditServiceForm from "./EditServiceForm";
 import { deleteService } from "@/app/actions/admin";
+import { toast } from "sonner";
 
 type Service = {
   id: string;
@@ -27,8 +28,13 @@ export default function ServicesList({ initialServices }: Props) {
   const [serviceToEdit, setServiceToEdit] = useState<Service | null>(null);
 
   const handleDelete = async (id: string) => {
-    await deleteService(id);
-    setServices((prev) => prev.filter((s) => s.id !== id));
+    try {
+      await deleteService(id);
+      setServices((prev) => prev.filter((s) => s.id !== id));
+      toast.success("Service deleted successfully");
+    } catch {
+      toast.error("Failed to delete service");
+    }
   };
 
   const onConfirm = async () => {

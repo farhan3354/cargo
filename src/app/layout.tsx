@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 // Fonts are handled via system stacks in offline mode
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
+import { Toaster as SonnerToaster } from "@/components/ui/sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import FloatingButtons from "@/components/FloatingButtons";
@@ -40,6 +41,7 @@ export default function RootLayout({
         {children}
         <Footer />
         <Toaster />
+        <SonnerToaster position="top-right" richColors />
         <FloatingButtons />
       </body>
     </html>

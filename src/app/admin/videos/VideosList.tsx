@@ -33,8 +33,13 @@ export default function VideosList({ initialVideos }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleDelete = async (id: string) => {
-    await deleteVideo(id);
-    setVideos((prev) => prev.filter((v) => v.id !== id));
+    try {
+      await deleteVideo(id);
+      setVideos((prev) => prev.filter((v) => v.id !== id));
+      toast.success("Video deleted successfully!");
+    } catch {
+      toast.error("Failed to delete video.");
+    }
   };
 
   const onConfirm = async () => {

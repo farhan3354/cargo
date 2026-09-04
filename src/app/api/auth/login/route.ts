@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
+import { getBackendBaseUrl } from '@/lib/api';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    const baseUrl = getBackendBaseUrl();
 
     // Call the Node.js backend
-    const res = await fetch('http://127.0.0.1:4000/api/admin/login', {
+    const res = await fetch(`${baseUrl}/api/admin/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

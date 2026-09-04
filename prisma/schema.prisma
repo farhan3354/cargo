@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
@@ -73,4 +73,59 @@ model Customer {
   updatedAt         DateTime   @updatedAt
 
   shipments         Shipment[]
+}
+
+// Office model for contact and footer details
+model Office {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  address   String?
+  imageUrl  String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// SiteContent for dynamic website content (texts, images, videos)
+model SiteContent {
+  id          String   @id @default(cuid())
+  section     String   // e.g., 'hero', 'about', 'footer'
+  key         String   @unique // e.g., 'hero_title', 'hero_video_url'
+  value       String   // The text content or URL
+  type        String   @default("text") // 'text', 'image', 'video'
+  description String?  // Helper text for admin
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Service model
+model Service {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  imageUrl    String?
+  order       Int       @default(0)
+}
+
+// About page model
+model AboutPage {
+  id       String @id @default(cuid())
+  title    String
+  content  String
+  imageUrl String?
+}
+
+// Admin model for authentication
+model Admin {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // hashed password
+  fullName  String
+  role      String   @default("admin") // admin, superadmin
+  isActive  Boolean  @default(true)
+  lastLogin DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

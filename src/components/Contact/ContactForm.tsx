@@ -1,3 +1,4 @@
+"use client"
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import SuccessPopup from "./SuccessPopup";
 import {
@@ -22,7 +23,9 @@ const getNewCaptcha = () => {
   };
 };
 
-export default function ContactForm() {
+const getWebsiteOfficeTag = () => "Website Inquiry";
+
+export default function ContactForm({ address, phone, email }: { address?: string; phone?: string; email?: string }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -119,9 +122,11 @@ export default function ContactForm() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-const getContactApiUrl = () => {
-    const baseUrl ="https://jobzy-api.rentubuy.com";
-
+  const getContactApiUrl = () => {
+    let baseUrl = (process.env.NEXT_PUBLIC_BACKEND_URL?.trim() || "http://localhost:4000").replace(/\/+$/, "");
+    if (baseUrl.endsWith("/api")) {
+      baseUrl = baseUrl.slice(0, -4);
+    }
     return `${baseUrl}/api/contact/form`;
   };
 
@@ -141,6 +146,7 @@ const getContactApiUrl = () => {
           email: formData.email,
           subject: formData.subject,
           message: formData.message,
+          officeTag: getWebsiteOfficeTag(),
           captchaInput: formData.captchaInput,
           captchaHash: captcha.hash,
         }),
@@ -258,8 +264,8 @@ const getContactApiUrl = () => {
 
                   <div>
                     <h4 className="text-lg font-semibold">Office Address</h4>
-                    <p className="text-gray-200 mt-1">
-                      Office #12, Business Avenue, Dubai, UAE
+                    <p className="text-gray-200 mt-1 whitespace-pre-wrap">
+                      {address || "Office #12, Business Avenue, Dubai, UAE"}
                     </p>
                   </div>
                 </div>
@@ -271,7 +277,7 @@ const getContactApiUrl = () => {
 
                   <div>
                     <h4 className="text-lg font-semibold">Email Address</h4>
-                    <p className="text-gray-200 mt-1">dubai@manaralkhair.com</p>
+                    <p className="text-gray-200 mt-1">{email || "dubai@manaralkhair.com"}</p>
                   </div>
                 </div>
 
@@ -282,7 +288,7 @@ const getContactApiUrl = () => {
 
                   <div>
                     <h4 className="text-lg font-semibold">Phone Number</h4>
-                    <p className="text-gray-200 mt-1">+971 50 123 4567</p>
+                    <p className="text-gray-200 mt-1">{phone || "+971 50 123 4567"}</p>
                   </div>
                 </div>
               </div>

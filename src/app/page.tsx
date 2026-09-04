@@ -1,38 +1,63 @@
-"use client"
+import React from "react";
+// Removed unused dynamic import
+import { getSiteContentMap, getOffices, getServices, getAbout, getVideos } from "@/app/actions/admin";
 
-import React, { useState } from 'react'
-import Hero from '@/components/Home/Hero'
-import Stats from '@/components/Home/Stats'
-import About from '@/components/Home/About'
-import Services from '@/components/Home/Services'
-import WhyChooseUs from '@/components/Home/WhyChooseUs'
-import Testimonials from '@/components/Home/Testimonials'
-import Projects from '@/components/Home/Projects'
-import Offices from '@/components/Home/Offices'
-import ContactModal from '@/components/Contact/ContactModal'
-import FAQSection from '@/components/Home/FinalCTA'
+// Above-the-fold: load immediately
+import Hero from "@/components/Home/Hero";
+import Stats from "@/components/Home/Stats";
+import About from "@/components/Home/About";
+import Services from "@/components/Home/Services";
+import WhyChooseUs from "@/components/Home/WhyChooseUs";
 
-export default function Home() {
-  const [isModalOpen, setIsModalOpen] = useState(false)
-  const [recipient, setRecipient] = useState<string | undefined>(undefined)
+// Below-the-fold: lazy load to reduce initial JS bundle
+import LazySections from "@/components/Home/LazySections";
 
-  const handleContactClick = (email: string) => {
-    setRecipient(email)
-    setIsModalOpen(true)
+export default async function Home() {
+  let content: Record<string, string> = {};
+  let dbOffices: Awaited<ReturnType<typeof getOffices>> = [];
+  let dbServices: Awaited<ReturnType<typeof getServices>> = [];
+  let dbVideos: Awaited<ReturnType<typeof getVideos>> = [];
+  let aboutData: Awaited<ReturnType<typeof getAbout>> = null;
+  try {
+    const [
+      contentRes,
+      officesRes,
+      servicesRes,
+      videosRes,
+      aboutRes
+    ] = await Promise.all([
+      getSiteContentMap(),
+      getOffices(),
+      getServices(),
+      getVideos(),
+      getAbout()
+    ]);
+    
+    content = contentRes;
+    dbOffices = officesRes;
+    dbServices = servicesRes;
+    dbVideos = videosRes;
+    aboutData = aboutRes;
+  } catch {
+    // Backend unavailable — use defaults from components
   }
 
   return (
     <main className="flex-1 overflow-x-hidden">
-      <Hero />
+      <Hero 
+        heroTitle={content["hero_title"]} 
+        heroSubtitle={content["hero_subtitle"]}
+        dbVideos={dbVideos}
+      />
       <Stats />
-      <About />
-      <Services />
+      <About 
+        aboutTitle={aboutData?.title || content["about_title"]}
+        aboutText={aboutData?.content || content["about_text"]}
+        aboutImage={aboutData?.imageUrl || content["about_image_1"]}
+      />
+      <Services dbServices={dbServices} />
       <WhyChooseUs />
-      <Testimonials />
-      <Projects />
-      <Offices onContactClick={handleContactClick} />
-      <ContactModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} recipient={recipient} title={"Contact Office"} submitLabel={"Send Message"} />
-      {/* <FAQSection /> */}
+       <LazySections dbOffices={dbOffices} />
     </main>
-  )
+  );
 }

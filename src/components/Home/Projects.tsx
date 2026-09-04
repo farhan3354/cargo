@@ -7,55 +7,55 @@ const gallery = [
   {
     type: 'video',
     src: '/banner1.mp4',
-    poster: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070',
+    poster: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=60&w=800',
     title: 'Air Cargo Operations (Video)',
   },
   {
     type: 'video',
     src: '/banner2.mp4',
-    poster: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=2070',
+    poster: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=60&w=800',
     title: 'Logistics Center Hub (Video)',
   },
   {
     type: 'video',
     src: '/banner3.mp4',
-    poster: 'https://images.unsplash.com/photo-1616432043562-3671ea2e5242?q=80&w=2070',
+    poster: 'https://images.unsplash.com/photo-1616432043562-3671ea2e5242?q=60&w=800',
     title: 'Fast Cargo Delivery (Video)',
   },
   {
     type: 'image',
-    src: 'https://images.unsplash.com/photo-1616432043562-3671ea2e5242?q=80&w=2070',
+    src: 'https://images.unsplash.com/photo-1616432043562-3671ea2e5242?q=70&w=800',
     title: 'Domestic Cargo Routing',
   },
   {
     type: 'image',
-    src: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=80&w=2070',
+    src: 'https://images.unsplash.com/photo-1578575437130-527eed3abbec?q=70&w=800',
     title: 'Sea Freight Vessel',
   },
   {
     type: 'image',
-    src: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=80&w=2070',
+    src: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?q=70&w=800',
     title: 'Air Freight Cargo',
   },
   {
     type: 'image',
-    src: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070',
+    src: 'https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=70&w=800',
     title: 'Warehouse & Storage',
   },
   {
     type: 'image',
-    src: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=80&w=2070',
+    src: 'https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?q=70&w=800',
     title: 'Secure Door-to-Door Delivery',
   },
   {
     type: 'image',
-    src: 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?q=80&w=2070',
+    src: 'https://images.unsplash.com/photo-1565793298595-6a879b1d9492?q=70&w=800',
     title: 'Custom Clearance Process',
   },
 ]
 
 export default function Gallery() {
-  const [selectedIndex, setSelectedIndex] = useState(null)
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null)
 
   const nextImage = () => {
     setSelectedIndex((prev) =>
@@ -93,6 +93,8 @@ export default function Gallery() {
               <img
                 src={item.type === 'video' ? item.poster : item.src}
                 alt={item.title}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover group-hover:scale-110 transition duration-700"
               />
 

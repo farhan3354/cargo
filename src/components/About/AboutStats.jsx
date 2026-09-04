@@ -1,11 +1,11 @@
 import React from 'react'
 
-export default function AboutStats() {
+export default function AboutStats({ data }) {
   const stats = [
-    ['5000+', 'Shipments Delivered'],
-    ['20+', 'Countries Served'],
-    ['24/7', 'Customer Support'],
-    ['99%', 'On-Time Delivery'],
+    [data?.stat1Value || '5000+', data?.stat1Label || 'Shipments Delivered'],
+    [data?.stat2Value || '20+', data?.stat2Label || 'Countries Served'],
+    [data?.stat3Value || '24/7', data?.stat3Label || 'Customer Support'],
+    [data?.stat4Value || '99%', data?.stat4Label || 'On-Time Delivery'],
   ]
 
   return (
@@ -24,4 +24,4 @@ export default function AboutStats() {
       </div>
     </section>
   )
-}
+}

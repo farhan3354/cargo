@@ -4,19 +4,28 @@ import React from 'react'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { MessageCircle } from 'lucide-react'
-import { motion } from 'framer-motion'
 
-const bannerVideos = [
+const defaultBannerVideos = [
   '/banner1.mp4',
   '/banner2.mp4',
   '/banner3.mp4',
 ]
 
-export default function Hero() {
+interface HeroProps {
+  heroTitle?: string;
+  heroSubtitle?: string;
+  dbVideos?: any[];
+}
+
+export default function Hero({ heroTitle, heroSubtitle, dbVideos = [] }: HeroProps) {
   const [currentVideoIndex, setCurrentVideoIndex] = React.useState(0)
+  
+  const videos = dbVideos.length > 0 ? dbVideos.map(v => v.url) : defaultBannerVideos;
 
   const handleVideoEnded = () => {
-    setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % bannerVideos.length)
+    if (videos.length > 1) {
+      setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % videos.length)
+    }
   }
 
   return (
@@ -24,37 +33,29 @@ export default function Hero() {
       
       <div className="absolute inset-0 z-0 bg-slate-900">
         <video
-          key={currentVideoIndex}
+          key={videos[currentVideoIndex]}
           autoPlay
           muted
           playsInline
-          preload="auto"
+          loop={videos.length === 1}
+          preload="none"
           onEnded={handleVideoEnded}
-          onError={handleVideoEnded} // Skip if video fails to load
-          className="w-full h-full object-cover transition-opacity duration-1000"
+          onError={handleVideoEnded}
+          className="w-full h-full object-cover hero-fade-in"
         >
-          <source src={bannerVideos[currentVideoIndex]} type="video/mp4" />
+          <source src={videos[currentVideoIndex]} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/45"></div>
-        {/* <div className="absolute inset-0 bg-gradient-to-r from-[#0f172a]/80 via-[#0f172a]/50 to-transparent"></div> */}
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-12 w-full">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="max-w-3xl"
-        >
+        <div className="max-w-3xl hero-content-fade">
           <div className="w-20 h-1 bg-white rounded-full mb-6"></div>
           <h1 className="text-white font-bold leading-tight text-2xl sm:text-3xl md:text-5xl lg:text-5xl">
-           MANAR ALKHAIR CARGO
+           {heroTitle || "MANAR ALKHAIR CARGO"}
           </h1>
-          <h1 className="text-white font-bold leading-tight text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
-            Fast & Reliable
-            <span className="block text-blue-300">
-              Shipping Services
-            </span>
+          <h1 className="text-white font-bold leading-tight text-2xl sm:text-3xl md:text-4xl lg:text-5xl whitespace-pre-line">
+            {heroSubtitle || "Fast & Reliable\nShipping Services"}
           </h1>
 
           <p className="mt-6 text-lg md:text-xl text-gray-200 max-w-2xl leading-relaxed">
@@ -63,8 +64,6 @@ export default function Hero() {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
-           
-
             <Link href="tel:+971523979396">
               <Button
                 variant="outline"
@@ -84,8 +83,25 @@ export default function Hero() {
               </Button>
             </Link>
           </div>
-        </motion.div>
+        </div>
       </div>
+
+      <style>{`
+        .hero-fade-in {
+          animation: heroFadeIn 1s ease-in-out;
+        }
+        .hero-content-fade {
+          animation: heroContentFade 0.8s ease-out both;
+        }
+        @keyframes heroFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes heroContentFade {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </section>
   )
 }

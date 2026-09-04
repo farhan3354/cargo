@@ -32,6 +32,39 @@ const getNewCaptcha = () => {
   };
 };
 
+const getOfficeTag = (value?: string) => {
+  const mapping: Record<string, string> = {
+    "Dubai Head Office": "Dubai Office",
+    "Hargeisa Office": "Hargeisa Office",
+    "Wajaale Office": "Wajaale Office",
+    "Mogadishu Office": "Mogadishu Office",
+    "Bosaso Office": "Bosaso Office",
+    "Jigjiga Office": "Jigjiga Office",
+    "Sharjah to Tanzania": "Tanzania Office",
+    "Sharjah to South Sudan": "South Sudan Office",
+    "Sharjah to Kenya": "Kenya Office",
+    "Sharjah to Kinshasa": "Kinshasa Office",
+    "Sharjah to Lusaka": "Lusaka Office",
+    "Sharjah to Zanzibar": "Zanzibar Office",
+    "Dubai to Lusaka": "Lusaka Office",
+    "Dubai to Juba": "Juba Office",
+    "dubai@manarcargo.com": "Dubai Office",
+    "hargeisa@manarcargo.com": "Hargeisa Office",
+    "wajaale@manarcargo.com": "Wajaale Office",
+    "mogadishu@manarcargo.com": "Mogadishu Office",
+    "bosaso@manarcargo.com": "Bosaso Office",
+    "jigjiga@manarcargo.com": "Jigjiga Office",
+    "sharjah@manarcargo.com": "Sharjah Office",
+    "manarcargo@manarcargo.com": "General Inquiry",
+  };
+
+  if (!value) {
+    return "Website Inquiry";
+  }
+
+  return mapping[value] || value;
+};
+
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -67,15 +100,6 @@ export default function ContactModal({
     setCaptcha(getNewCaptcha());
     setFormData((prev) => ({ ...prev, captchaInput: "" }));
   }, []);
-
-  useEffect(() => {
-    if (recipient && isOpen) {
-      setFormData((prev) => ({
-        ...prev,
-        subject: `Inquiry for ${recipient}`,
-      }));
-    }
-  }, [recipient, isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -144,18 +168,21 @@ export default function ContactModal({
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const getContactApiUrl = () => {
-    const baseUrl =
-      process.env.NEXT_PUBLIC_BACKEND_URL?.trim() ||
-      "https://jobzy-api.rentubuy.com";
+  const defaultSubject = recipient
+    ? `Inquiry for ${getOfficeTag(recipient)}`
+    : "";
 
+  const getContactApiUrl = () => {
+    let baseUrl = (process.env.NEXT_PUBLIC_BACKEND_URL?.trim() || "http://localhost:4000").replace(/\/+$/, "");
+    if (baseUrl.endsWith("/api")) {
+      baseUrl = baseUrl.slice(0, -4);
+    }
     return `${baseUrl}/api/contact/form`;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus({ type: "loading", message: "Sending your message..." });
-    const apiUrl = getContactApiUrl();
     try {
       const apiUrl = getContactApiUrl();
       const res = await fetch(apiUrl, {
@@ -164,9 +191,9 @@ export default function ContactModal({
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
-          subject: formData.subject,
+          subject: formData.subject || defaultSubject,
           message: formData.message,
-          to: recipient,
+          officeTag: getOfficeTag(recipient),
           captchaInput: formData.captchaInput,
           captchaHash: captcha.hash,
         }),
@@ -254,7 +281,7 @@ export default function ContactModal({
               </DialogTitle>
               <DialogDescription className="text-white/70 text-base">
                 {recipient
-                  ? `Sending message to: ${recipient}`
+                  ? `Sending message to: ${getOfficeTag(recipient)}`
                   : "Fill out the form below to get in touch with our team."}
               </DialogDescription>
             </DialogHeader>
@@ -308,7 +335,7 @@ export default function ContactModal({
                 <input
                   type="text"
                   name="subject"
-                  value={formData.subject}
+                  value={formData.subject || defaultSubject}
                   onChange={handleChange}
                   required
                   placeholder="Subject"

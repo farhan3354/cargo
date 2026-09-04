@@ -1,7 +1,7 @@
-"use client";
 import React from "react";
 import Link from "next/link";
 import { Phone, Mail, MapPin } from "lucide-react";
+import { getSiteContentMap } from "@/app/actions/admin";
 
 const navItems = [
   { label: "Home", href: "/" },
@@ -17,13 +17,22 @@ const services = [
   "Sea Freight",
 ];
 
-export default function Footer() {
+export default async function Footer() {
+  const content = await getSiteContentMap();
+  
+  const footerDescription = content.footer_description || "Trusted cargo and logistics solutions delivering your shipments safely and efficiently worldwide.";
+  const footerPhone = content.footer_phone || "+971 52 397 9396";
+  const footerEmail = content.footer_email || "info@manarcargo.com";
+  const footerAddress = content.footer_address || "Dubai, United Arab Emirates";
+  const footerCopyright = content.footer_copyright || "© 2026 MANAR ALKHAIR CARGO L.L.C. Powered by BIS TECHNOLOGY. All rights reserved.";
+
   return (
     <footer className="bg-[#0f172a] text-white pt-8 pb-4">
       <div className="max-w-[1240px] mx-auto px-5">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-white/10">
           <div>
             <Link href="/" className="inline-flex items-center gap-3 mb-5">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/finallogo.jpeg"
                 alt="Manar Cargo Logo"
@@ -40,8 +49,7 @@ export default function Footer() {
             </Link>
 
             <p className="text-white/70 leading-relaxed text-sm">
-              Trusted cargo and logistics solutions delivering your shipments
-              safely and efficiently worldwide.
+              {footerDescription}
             </p>
           </div>
 
@@ -75,25 +83,24 @@ export default function Footer() {
 
             <div className="space-y-4 text-white/70 text-sm">
               <div className="flex gap-3">
-                <Phone className="w-4 h-4 mt-1 text-blue-300" />
-                <span>+971 52 397 9396</span>
+                <Phone className="w-4 h-4 mt-1 text-blue-300 flex-shrink-0" />
+                <span>{footerPhone}</span>
               </div>
 
               <div className="flex gap-3">
-                <Mail className="w-4 h-4 mt-1 text-blue-300" />
-                <span>info@manarcargo.com</span>
+                <Mail className="w-4 h-4 mt-1 text-blue-300 flex-shrink-0" />
+                <span>{footerEmail}</span>
               </div>
 
               <div className="flex gap-3">
-                <MapPin className="w-4 h-4 mt-1 text-blue-300" />
-                <span>Dubai, United Arab Emirates</span>
+                <MapPin className="w-4 h-4 mt-1 text-blue-300 flex-shrink-0" />
+                <span>{footerAddress}</span>
               </div>
             </div>
           </div>
         </div>
         <div className="pt-6 text-center text-sm text-white/50">
-          © 2026 MANAR ALKHAIR CARGO L.L.C. Powered by BIS TECHNOLOGY. All
-          rights reserved.
+          {footerCopyright}
         </div>
       </div>
     </footer>

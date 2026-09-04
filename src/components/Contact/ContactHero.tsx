@@ -1,7 +1,7 @@
 "use client"
 import React from 'react'
 
-export default function ContactHero() {
+export default function ContactHero({ title, subtitle }: { title?: string; subtitle?: string }) {
   return (
     <section className="relative h-[55vh] mt-20 flex items-center overflow-hidden">
       <img
@@ -19,13 +19,12 @@ export default function ContactHero() {
 
         <h1 className="text-3xl md:text-5xl font-bold text-white mb-5">
           <span className="block text-[#d8d9ff]">
-            Manar Cargo
+            {title || "Manar Cargo"}
           </span>
         </h1>
 
-        <p className="text-white/80 max-w-2xl text-lg">
-          Get in touch with our team for shipping, logistics,
-              cargo tracking, and support services.
+        <p className="text-white/80 max-w-2xl text-lg whitespace-pre-wrap">
+          {subtitle || "Get in touch with our team for shipping, logistics, cargo tracking, and support services."}
         </p>
       </div>
     </section>

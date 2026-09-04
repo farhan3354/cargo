@@ -7,6 +7,7 @@
     "dev": "node --watch index.js",
     "start": "node index.js",
     "seed": "node scripts/seedDatabase.js",
+    "createadmin": "node scripts/createAdmin.js",
     "seed:watch": "node --watch scripts/seedDatabase.js"
   },
   "dependencies": {

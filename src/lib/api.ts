@@ -1,13 +1,20 @@
 export function getBackendBaseUrl(): string {
-  let url =
-    process.env.NEXT_PUBLIC_BACKEND_URL?.trim() ||
-    process.env.BACKEND_URL?.trim() ||
-    "http://127.0.0.1:4000";
-
+  const clientUrl = process.env.NEXT_PUBLIC_BACKEND_URL?.trim();
+  const serverUrl = process.env.BACKEND_URL?.trim();
+  let url = clientUrl || serverUrl || "";
+  if (!url) {
+    if (process.env.NODE_ENV === "production") {
+      console.error("[Backend URL] Environment variable for backend URL is missing in production.");
+      throw new Error("Backend URL not configured. Set NEXT_PUBLIC_BACKEND_URL or BACKEND_URL.");
+    }
+    // Default to localhost for development
+    url = "http://127.0.0.1:4000";
+  }
   url = url.replace(/\/+$/, "");
   if (url.endsWith("/api")) {
     url = url.slice(0, -4);
   }
+  console.log("[Backend URL] Using base URL:", url);
   return url;
 }
 
@@ -148,6 +155,7 @@ async function apiFetch<T>(
   const baseUrl = getBackendBaseUrl();
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
   const targetUrl = `${baseUrl}${normalizedPath}`;
+  console.log('[API Fetch] Requesting', { method: fetchOptions.method || "GET", url: targetUrl });
 
   const isPublicGet = !admin && (!fetchOptions.method || fetchOptions.method === "GET");
   const fetchConfig: RequestInit = {
@@ -166,7 +174,9 @@ async function apiFetch<T>(
   let res: Response;
   try {
     res = await fetch(targetUrl, fetchConfig);
+    console.log('[API Fetch] Response', { status: res.status, ok: res.ok });
   } catch {
+    console.error('[API Fetch] Network error reaching', targetUrl);
     throw new BackendUnavailableError(
       `Cannot reach backend at ${targetUrl}. Start the backend server on port 4000.`,
     );
@@ -180,6 +190,14 @@ async function apiFetch<T>(
   }
 
   if (!res.ok) {
+    // Redirect to login if unauthorized or forbidden
+    if (admin && (res.status === 401 || res.status === 403)) {
+      console.log(`[API Fetch] Redirecting to login due to ${res.status} response from backend`);
+      const { redirect } = await import('next/navigation');
+      redirect('/admin/login');
+    }
+
+    console.error('[API Fetch] Error response', { status: res.status, error: json.error, body: json });
     throw new Error(json.error || "API request failed");
   }
 
@@ -197,6 +215,27 @@ export const api = {
   hardDeleteOffice: (id: string) =>
     apiFetch<{ message: string }>(`/api/offices/${id}/hard`, { method: "DELETE", admin: true }),
 
+  // Admin login helper – posts credentials to backend admin login endpoint
+  login: async (email: string, password: string) => {
+    try {
+      console.log('Attempting admin login with email:', email);
+      const res = await fetch(`${getBackendBaseUrl()}/api/admin/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+        credentials: 'include', // ensure cookies are set
+      });
+      const data = await res.json();
+      console.log('Login response status:', res.status, 'data:', data);
+      if (!res.ok) {
+        throw new Error(data.error || 'Login failed');
+      }
+      return data; // contains token and admin info
+    } catch (err) {
+      console.error('Admin login error:', err);
+      throw err;
+    }
+  },
   getSiteContent: (section?: string) =>
     apiFetch<SiteContent[]>(section ? `/api/content?section=${section}` : "/api/content"),
   getSiteContentMap: () => apiFetch<Record<string, string>>("/api/content/map"),

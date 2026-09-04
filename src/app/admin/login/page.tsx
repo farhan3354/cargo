@@ -17,25 +17,27 @@ export default function AdminLogin() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+      console.log('Submitting admin login', { email, password });
+      const res = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
+        credentials: 'include',
       });
-      
+      console.log('Login fetch returned status', res.status);
       const data = await res.json();
-      
+      console.log('Login response payload', data);
       if (res.ok && data.success) {
-        toast.success("Login successful");
-        router.push("/admin");
+        toast.success('Login successful');
+        router.push('/admin');
         router.refresh();
       } else {
-        toast.error(data.error || "Login failed");
+        toast.error(data.error || 'Login failed');
       }
     } catch (err) {
-      toast.error("An error occurred during login");
+      console.error('Login request error', err);
+      toast.error('An error occurred during login');
     } finally {
       setIsLoading(false);
     }

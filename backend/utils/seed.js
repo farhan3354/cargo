@@ -115,4 +115,16 @@ export async function seedDatabase() {
     await AboutPage.create(defaultAbout);
     console.log("Seeded default about page");
   }
+
+  const Admin = (await import("../models/Admin.js")).default;
+  const adminCount = await Admin.countDocuments();
+  if (adminCount === 0) {
+    await Admin.create({
+      email: "admin@manarcargo.com",
+      password: "cargo123",
+      fullName: "Super Admin",
+      role: "superadmin",
+    });
+    console.log("Seeded default admin user: admin@manarcargo.com / cargo123");
+  }
 }

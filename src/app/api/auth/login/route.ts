@@ -5,6 +5,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const baseUrl = getBackendBaseUrl();
+    console.log('Proxying login request to backend', { baseUrl, endpoint: `${baseUrl}/api/admin/login` });
 
     const res = await fetch(`${baseUrl}/api/admin/login`, {
 
@@ -16,6 +17,7 @@ export async function POST(request: Request) {
     });
 
     const data = await res.json();
+    console.log('Backend login response', { status: res.status, data });
 
     if (res.ok && data.token) {
       const response = NextResponse.json({ success: true, admin: data.admin });

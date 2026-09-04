@@ -13,6 +13,7 @@ import Office from "../models/Office.js";
 import SiteContent from "../models/SiteContent.js";
 import Video from "../models/Video.js";
 import AboutPage from "../models/AboutPage.js";
+import Admin from "../models/Admin.js";
 
 // Use default if not set
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/cargo_db';
@@ -89,6 +90,7 @@ async function clearCollections() {
     await SiteContent.deleteMany({});
     await Video.deleteMany({});
     await AboutPage.deleteMany({});
+    await Admin.deleteMany({});
     console.log("✓ Cleared all collections");
   } catch (err) {
     console.error("✗ Failed to clear collections:", err.message);
@@ -177,6 +179,22 @@ async function seedAboutPage() {
   }
 }
 
+async function seedAdmin() {
+  try {
+    console.log("\n👤 Seeding Admin User...");
+    const admin = await Admin.create({
+      email: "admin@manarcargo.com",
+      password: "cargo123",
+      fullName: "Super Admin",
+      role: "superadmin",
+    });
+    console.log("✓ Created Admin User");
+    console.log(`  - Email: ${admin.email}`);
+  } catch (err) {
+    console.error("✗ Failed to seed admin user:", err.message);
+  }
+}
+
 async function main() {
   console.log("🌱 Starting Database Seeding...\n");
   console.log("=====================================");
@@ -189,6 +207,7 @@ async function main() {
     await seedSiteContent();
     await seedVideos();
     await seedAboutPage();
+    await seedAdmin();
 
     console.log("\n=====================================");
     console.log("✅ Database seeding completed successfully!");
@@ -198,6 +217,7 @@ async function main() {
     console.log(`  - Site Content: ${seedData.siteContent.length}`);
     console.log(`  - Videos: ${seedData.videos.length}`);
     console.log(`  - About Pages: 1`);
+    console.log(`  - Admins: 1`);
     console.log("\n🎯 Next steps:");
     console.log("  1. Start the servers (npm run dev)");
     console.log("  2. Visit admin panel (http://localhost:3001/admin)");

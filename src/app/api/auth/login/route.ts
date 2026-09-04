@@ -6,8 +6,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const baseUrl = getBackendBaseUrl();
 
-    // Call the Node.js backend
     const res = await fetch(`${baseUrl}/api/admin/login`, {
+
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -18,10 +18,8 @@ export async function POST(request: Request) {
     const data = await res.json();
 
     if (res.ok && data.token) {
-      // Create response
       const response = NextResponse.json({ success: true, admin: data.admin });
-      
-      // Set the JWT token in an HTTP-only cookie
+
       response.cookies.set('admin_token', data.token, {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',

@@ -5,5 +5,5 @@ import { redirect } from "next/navigation";
 
 export async function logout() {
   cookies().delete("admin_session");
-  redirect("/admin/login");
+  redirect(process.env.NEXT_PUBLIC_FRONTEND_URL?.replace(/\\/+$/, '') || '/admin/login');
 }

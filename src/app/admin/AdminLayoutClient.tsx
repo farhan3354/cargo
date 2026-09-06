@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ReactNode } from "react";
-import { LayoutDashboard, Building2, Phone, Mail, Settings, ExternalLink, Briefcase, Video, Info } from "lucide-react";
+import { LayoutDashboard, Building2, Phone, Mail, Settings, ExternalLink, Briefcase, Video, Info, User } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -14,6 +14,7 @@ const navItems = [
   { href: "/admin/content", label: "Footer & Contact", icon: Phone },
   { href: "/admin/emails", label: "Contact Submissions", icon: Mail },
   { href: "/admin/settings", label: "Email Settings", icon: Settings },
+  { href: "/admin/profile", label: "Profile", icon: User },
 ];
 
 export default function AdminLayoutClient({ children }: { children: ReactNode }) {

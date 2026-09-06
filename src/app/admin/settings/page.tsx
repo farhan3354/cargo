@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Mail, Plus, Trash2, Save, Eye, EyeOff } from "lucide-react";
+import { Plus, Trash2, Eye, EyeOff } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface SMTPAccount {
@@ -68,9 +68,7 @@ const defaultTemplates: EmailTemplate[] = [
 export default function EmailSettingsPage() {
   const [activeTab, setActiveTab] = useState("smtp");
   const [smtpAccounts, setSmtpAccounts] = useState<SMTPAccount[]>([]);
-  const [templates, setTemplates] = useState<EmailTemplate[]>(defaultTemplates);
   const [showPasswords, setShowPasswords] = useState<Record<number, boolean>>({});
-  const [editingTemplate, setEditingTemplate] = useState<EmailTemplate | null>(null);
 
   const [newAccount, setNewAccount] = useState<SMTPAccount>({
     name: "",
@@ -91,23 +89,7 @@ export default function EmailSettingsPage() {
       })
       .catch(console.error);
 
-    fetch("/api/admin/email-templates")
-      .then((r) => r.json())
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setTemplates(
-            data.map((t: { templateId: string; id?: string; name: string; subject: string; htmlContent: string; plainTextContent: string; variables: string[] }) => ({
-              id: t.templateId || t.id,
-              name: t.name,
-              subject: t.subject,
-              htmlContent: t.htmlContent,
-              plainTextContent: t.plainTextContent,
-              variables: t.variables || [],
-            })),
-          );
-        }
-      })
-      .catch(console.error);
+
   }, []);
 
   const handleAddAccount = async () => {
@@ -146,22 +128,7 @@ export default function EmailSettingsPage() {
     }
   };
 
-  const handleUpdateTemplate = async (template: EmailTemplate) => {
-    try {
-      const res = await fetch("/api/admin/email-templates", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(template),
-      });
-      if (!res.ok) throw new Error("Failed to save");
-      const updated = templates.map((t) => (t.id === template.id ? template : t));
-      setTemplates(updated);
-      setEditingTemplate(null);
-      toast.success("Email template updated");
-    } catch {
-      toast.error("Failed to update template");
-    }
-  };
+
 
   return (
     <div className="space-y-8">
@@ -171,12 +138,10 @@ export default function EmailSettingsPage() {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="smtp">SMTP Accounts</TabsTrigger>
-          <TabsTrigger value="templates">Email Templates</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-1">
+          <TabsTrigger value="smtp" className="col-span-1">SMTP Accounts</TabsTrigger>
         </TabsList>
 
-        {/* SMTP Accounts Tab */}
         <TabsContent value="smtp" className="space-y-6">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 dark:bg-gray-800 dark:border-gray-700">
             <h2 className="text-xl font-semibold mb-6 text-gray-900 dark:text-white">Add New SMTP Account</h2>
@@ -273,7 +238,6 @@ export default function EmailSettingsPage() {
             </Button>
           </div>
 
-          {/* SMTP Accounts List */}
           <div className="space-y-4">
             {smtpAccounts.length === 0 ? (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 text-center text-gray-500 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400">
@@ -334,114 +298,8 @@ export default function EmailSettingsPage() {
               ))
             )}
           </div>
-        </TabsContent>
 
-        {/* Email Templates Tab */}
-        <TabsContent value="templates" className="space-y-6">
-          <div className="space-y-4">
-            {templates.map((template) => (
-              <div key={template.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:bg-gray-800 dark:border-gray-700">
-                <div className="p-6 space-y-4">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="text-xl font-semibold text-gray-900 dark:text-white">{template.name}</h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        Variables: {template.variables.join(", ")}
-                      </p>
-                    </div>
-                    <Button
-                      onClick={() => setEditingTemplate(template)}
-                      variant="outline"
-                      size="sm"
-                    >
-                      Edit
-                    </Button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Subject:</p>
-                    <p className="text-gray-600 dark:text-gray-400">{template.subject}</p>
-                  </div>
-                </div>
-
-                {/* Edit Template Modal */}
-                {editingTemplate?.id === template.id && (
-                  <div className="border-t border-gray-200 dark:border-gray-700 p-6 bg-gray-50 dark:bg-gray-750 space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor={`subject-${template.id}`}>Email Subject</Label>
-                      <Input
-                        id={`subject-${template.id}`}
-                        value={editingTemplate.subject}
-                        onChange={(e) =>
-                          setEditingTemplate({
-                            ...editingTemplate,
-                            subject: e.target.value,
-                          })
-                        }
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor={`html-${template.id}`}>HTML Content</Label>
-                      <Textarea
-                        id={`html-${template.id}`}
-                        value={editingTemplate.htmlContent}
-                        onChange={(e) =>
-                          setEditingTemplate({
-                            ...editingTemplate,
-                            htmlContent: e.target.value,
-                          })
-                        }
-                        rows={10}
-                        className="font-mono text-sm"
-                      />
-                      <p className="text-xs text-gray-500 dark:text-gray-400">
-                        Use {'{variable}'} for dynamic content
-                      </p>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor={`text-${template.id}`}>Plain Text Content</Label>
-                      <Textarea
-                        id={`text-${template.id}`}
-                        value={editingTemplate.plainTextContent}
-                        onChange={(e) =>
-                          setEditingTemplate({
-                            ...editingTemplate,
-                            plainTextContent: e.target.value,
-                          })
-                        }
-                        rows={6}
-                      />
-                    </div>
-
-                    <div className="flex gap-3">
-                      <Button
-                        onClick={() => handleUpdateTemplate(editingTemplate)}
-                        className="gap-2"
-                      >
-                        <Save className="w-4 h-4" />
-                        Save Template
-                      </Button>
-                      <Button
-                        onClick={() => setEditingTemplate(null)}
-                        variant="outline"
-                      >
-                        Cancel
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className="bg-blue-50 rounded-lg p-4 border border-blue-200 dark:bg-blue-900/20 dark:border-blue-800">
-            <p className="text-sm text-blue-900 dark:text-blue-200">
-              <strong>Tip:</strong> Use variables like {'{name}'}, {'{email}'}, {'{subject}'}, and {'{message}'} in your templates. They will be replaced with actual data when emails are sent.
-            </p>
-          </div>
-        </TabsContent>
+      </TabsContent>
       </Tabs>
     </div>
   );

@@ -40,8 +40,6 @@ export function AdditionalAboutForm({ initialData }: { initialData: AboutData | 
         subtitle: formData.get("subtitle") as string,
         mission: formData.get("mission") as string,
         vision: formData.get("vision") as string,
-        extraContent: formData.get("extraContent") as string,
-        extraImageUrl: extraImageUrl || undefined,
       });
 
       if (result?.success === false) {
@@ -92,41 +90,6 @@ export function AdditionalAboutForm({ initialData }: { initialData: AboutData | 
         />
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="extraContent">Extra Content / Why Choose Us</Label>
-        <Textarea
-          id="extraContent"
-          name="extraContent"
-          rows={5}
-          defaultValue={initialData?.extraContent || ""}
-          placeholder="Additional paragraph or section content for the about page..."
-        />
-      </div>
-
-      <div className="space-y-2">
-        <Label>Extra Section Image</Label>
-        {extraImageUrl ? (
-          <div className="relative w-full max-w-md h-48 rounded-md overflow-hidden bg-gray-100 border border-gray-200">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={extraImageUrl}
-              alt="Extra about image"
-              className="object-cover w-full h-full"
-            />
-            <Button
-              type="button"
-              variant="destructive"
-              size="sm"
-              className="absolute top-2 right-2 h-7"
-              onClick={() => setExtraImageUrl("")}
-            >
-              Remove
-            </Button>
-          </div>
-        ) : (
-          <MediaPicker onMediaSelect={(url) => setExtraImageUrl(url)} />
-        )}
-      </div>
 
       <div className="flex gap-4">
         <Button

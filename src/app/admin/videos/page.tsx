@@ -11,7 +11,7 @@ export default async function VideosPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="mt-16 space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-[#110713]">Manage Videos</h1>
         <p className="text-[#66556B] mt-2">Add and manage promotional or instructional videos.</p>

@@ -54,6 +54,7 @@ export default function EditServiceForm({
 
           <div className="space-y-2">
             <Label>Service Image</Label>
+            <p className="text-xs text-red-500 font-medium">Recommended size: 800x600px (4:3 aspect ratio) for best appearance.</p>
             {imageUrl ? (
               <div className="relative w-full h-32 rounded-md overflow-hidden bg-gray-100 mb-2">
                 <img src={imageUrl} alt="Uploaded" className="object-cover w-full h-full" />

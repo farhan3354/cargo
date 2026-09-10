@@ -66,7 +66,7 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="mt-16 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#110713] via-[#1F2288] to-purple-900 p-8 shadow-2xl">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-blue-500/20 blur-3xl"></div>
         <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 rounded-full bg-purple-500/20 blur-3xl"></div>

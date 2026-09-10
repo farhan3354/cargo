@@ -25,6 +25,8 @@ export interface Office {
   name: string;
   email: string;
   phone?: string;
+  phones?: string[];
+  description?: string;
   address?: string;
   imageUrl?: string;
   order?: number;
@@ -71,6 +73,19 @@ export interface Video {
   cloudinaryId: string;
   url: string;
   thumbnail?: string;
+  order?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Testimonial {
+  id: string;
+  name: string;
+  text: string;
+  company: string;
+  logoUrl?: string;
+  logoCloudinaryId?: string;
+  hoverColor?: string;
   order?: number;
   createdAt: string;
   updatedAt: string;
@@ -277,4 +292,12 @@ export const api = {
     apiFetch<EmailTemplate>("/api/email-templates", { method: "POST", body: JSON.stringify(data), admin: true }),
   deleteEmailTemplate: (templateId: string) =>
     apiFetch<{ message: string }>(`/api/email-templates/${templateId}`, { method: "DELETE", admin: true }),
+
+  getTestimonials: () => apiFetch<Testimonial[]>("/api/testimonials"),
+  createTestimonial: (data: Partial<Testimonial>) =>
+    apiFetch<Testimonial>("/api/testimonials", { method: "POST", body: JSON.stringify(data), admin: true }),
+  updateTestimonial: (id: string, data: Partial<Testimonial>) =>
+    apiFetch<Testimonial>(`/api/testimonials/${id}`, { method: "PUT", body: JSON.stringify(data), admin: true }),
+  deleteTestimonial: (id: string) =>
+    apiFetch<{ message: string }>(`/api/testimonials/${id}`, { method: "DELETE", admin: true }),
 };

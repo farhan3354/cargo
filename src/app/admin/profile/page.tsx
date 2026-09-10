@@ -23,18 +23,18 @@ export default function AdminProfilePage() {
       return;
     }
     try {
-      const token = document.cookie.split('; ').find(c => c.startsWith('admin_session='))?.split('=')[1] || '';
       const res = await fetch("/api/admin/profile", {
         method: "PUT",
-        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          currentPassword,
           email: newEmail || undefined,
           password: newPassword || undefined,
         }),
       });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Failed to update profile");
+      const result = await res.json();
+      if (!res.ok || result.success === false) {
+        throw new Error(result.error || "Failed to update profile");
       }
       toast.success("Profile updated successfully");
       setCurrentPassword("");
@@ -47,7 +47,7 @@ export default function AdminProfilePage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
+    <div className="mt-16 max-w-2xl mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow">
       <h1 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">Admin Profile</h1>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">

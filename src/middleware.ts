@@ -8,7 +8,14 @@ export function middleware(request: NextRequest) {
     
     // If there is no token, redirect to the login page
     if (!token) {
-      const loginUrl = new URL('/admin/login', request.url);
+      const frontendUrl = process.env.NEXT_PUBLIC_FRONTEND_URL?.trim();
+      let loginUrl: URL;
+      if (frontendUrl && frontendUrl.startsWith('http')) {
+        loginUrl = new URL('/admin/login', frontendUrl);
+      } else {
+        loginUrl = request.nextUrl.clone();
+        loginUrl.pathname = '/admin/login';
+      }
       return NextResponse.redirect(loginUrl);
     }
     

@@ -11,7 +11,7 @@ export default async function OfficesPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="mt-16 space-y-8">
       <div>
         <h1 className="text-3xl font-bold text-[#110713]">Manage Offices</h1>
         <p className="text-[#66556B] mt-2">Add and manage office locations displayed on your website.</p>

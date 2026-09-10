@@ -23,7 +23,11 @@ export async function createOffice(data: {
   name: string;
   email: string;
   phone?: string;
+  phones?: string[];
+  description?: string;
   address?: string;
+  location?: string;
+  country?: string;
   imageUrl?: string;
   order?: number;
 }) {
@@ -39,7 +43,11 @@ export async function updateOffice(
     name: string;
     email: string;
     phone: string;
+    phones: string[];
+    description: string;
     address: string;
+    location: string;
+    country: string;
     imageUrl: string;
     order: number;
   }>,
@@ -190,5 +198,31 @@ export async function upsertEmailTemplate(data: any) {
 export async function deleteEmailTemplate(templateId: string) {
   await api.deleteEmailTemplate(templateId);
   revalidatePath("/admin/settings");
+  return true;
+}
+
+// Testimonials
+export async function getTestimonials() {
+  return safeRead([], () => api.getTestimonials());
+}
+
+export async function createTestimonial(data: any) {
+  const result = await api.createTestimonial(data);
+  revalidatePath("/");
+  revalidatePath("/admin/testimonials");
+  return result;
+}
+
+export async function updateTestimonial(id: string, data: any) {
+  const result = await api.updateTestimonial(id, data);
+  revalidatePath("/");
+  revalidatePath("/admin/testimonials");
+  return result;
+}
+
+export async function deleteTestimonial(id: string) {
+  await api.deleteTestimonial(id);
+  revalidatePath("/");
+  revalidatePath("/admin/testimonials");
   return true;
 }

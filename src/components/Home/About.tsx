@@ -28,7 +28,7 @@ export default function About({ aboutTitle, aboutText, aboutImage }: AboutProps)
             <h2 className="text-4xl lg:text-5xl font-heading font-normal text-[#110713]">
               {aboutTitle || "Learn More About Manar Cargo"}
             </h2>
-            <p className="text-lg text-[#66556B] leading-relaxed whitespace-pre-line">
+            <p className="text-lg text-[#66556B] leading-relaxed whitespace-pre-line text-justify">
               {aboutText || "Manar Cargo is dedicated to providing innovative shipping solutions tailored to meet the diverse needs of our customers across the globe."}
             </p>
             <Link href="/about">
@@ -41,15 +41,7 @@ export default function About({ aboutTitle, aboutText, aboutImage }: AboutProps)
             </Link>
             <div className="w-20 h-[3px] bg-[#1F2288] rounded-full mt-6"></div>
             <div className="flex mt-6 items-center gap-6 pt-12 border-t border-[#E5E7EB]">
-              {/* <img
-                src="https://randomuser.me/api/portraits/men/32.jpg"
-                alt="Ali Khan"
-                loading="lazy"
-                decoding="async"
-                className="w-16 h-16 rounded-full"
-              />{" "} */}
               <div className="w-16 h-16 rounded-full bg-[#1F2288]/10"></div>
-
               <div>
                 <h4 className="text-xl font-bold text-[#110713]">
                   Abdimailk Abdisalam Osman

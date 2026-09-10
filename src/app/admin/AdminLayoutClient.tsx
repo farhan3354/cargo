@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { ReactNode } from "react";
-import { LayoutDashboard, Building2, Phone, Mail, Settings, ExternalLink, Briefcase, Video, Info, User } from "lucide-react";
+import { LayoutDashboard, Building2, Phone, Mail, Settings, ExternalLink, Briefcase, Video, Info, User, Star } from "lucide-react";
 
 const navItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -12,8 +12,9 @@ const navItems = [
   { href: "/admin/videos", label: "Videos", icon: Video },
   { href: "/admin/about", label: "About Page", icon: Info },
   { href: "/admin/content", label: "Footer & Contact", icon: Phone },
+  { href: "/admin/testimonials", label: "Our Customers", icon: Star },
   { href: "/admin/emails", label: "Contact Submissions", icon: Mail },
-  { href: "/admin/settings", label: "Email Settings", icon: Settings },
+  // { href: "/admin/settings", label: "Email Settings", icon: Settings },
   { href: "/admin/profile", label: "Profile", icon: User },
 ];
 
@@ -23,6 +24,16 @@ export default function AdminLayoutClient({ children }: { children: ReactNode })
   if (pathname === "/admin/login") {
     return <>{children}</>;
   }
+
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } catch {
+      // ignore
+    } finally {
+      window.location.href = "/admin/login";
+    }
+  };
 
   return (
     <div className="flex min-h-screen bg-[#F9F7FA]">
@@ -55,12 +66,13 @@ export default function AdminLayoutClient({ children }: { children: ReactNode })
         </nav>
 
         <div className="px-4 py-4 border-t border-white/10 space-y-2">
-           <a
-             href="/api/auth/logout"
-             className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors"
-           >
-             Logout
-           </a>
+          <button
+            onClick={handleLogout}
+            type="button"
+            className="flex items-center gap-2 text-sm text-red-400 hover:text-red-300 transition-colors w-full text-left cursor-pointer"
+          >
+            Logout
+          </button>
           <Link
             href="/"
             className="flex items-center gap-2 text-sm text-white/60 hover:text-white transition-colors"
@@ -76,7 +88,7 @@ export default function AdminLayoutClient({ children }: { children: ReactNode })
           <span className="font-bold">Manar Cargo Admin</span>
           <Link href="/" className="text-xs text-white/60 hover:text-white">View Site</Link>
         </div>
-        <div className="p-6 lg:p-8">
+        <div className="p-12 lg:p-8">
           {children}
         </div>
       </main>

@@ -2,8 +2,9 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Phone, MapPin, Mail, Globe, Navigation } from "lucide-react";
+import type { Office as ApiOffice } from "@/lib/api";
 
-const offices = [
+const hardcodedOffices = [
   {
     city: "Dubai Office",
     desc: "Our main office in Dubai is available for cargo inquiries, shipment bookings, and customer support.",
@@ -132,27 +133,31 @@ const offices = [
   },
 ];
 
-import { Office } from "@prisma/client";
-
 const globalEmails = ["sales@manaralkhair.com"];
+
+// Maximum number of phones to display (for consistent spacing)
+const MAX_PHONES = 3;
 
 export default function Offices({
   onContactClick,
   dbOffices,
-}: { onContactClick?: (officeTag: string) => void; dbOffices?: Office[] } = {}) {
+}: { onContactClick?: (officeTag: string) => void; dbOffices?: ApiOffice[] } = {}) {
   const router = useRouter();
 
   const displayOffices = dbOffices && dbOffices.length > 0
     ? dbOffices.map(o => ({
         city: o.name,
-        desc: o.address || "",
+        desc: o.description || o.address || "",
         img: o.imageUrl || "/placeholder.jpg",
-        phones: o.phone ? o.phone.split(",") : [],
+        phones: o.phones && o.phones.length > 0
+          ? o.phones
+          : o.phone
+            ? o.phone.split(",").map(p => p.trim())
+            : [],
         email: o.email,
-        location: o.name, // using name as location if no country field
-        country: "",
+        address: o.address || "",
       }))
-    : offices; // fallback to hardcoded if none in DB
+    : hardcodedOffices;
 
   return (
     <section className="py-8 md:py-14 bg-gradient-to-br from-[#F9F7FA] via-white to-[#F9F7FA]">
@@ -198,13 +203,13 @@ export default function Offices({
           {displayOffices.map((office, i) => (
             <div
               key={i}
-              className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-[#E5E7EB]"
+              className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-[#E5E7EB] flex flex-col h-full"
             >
-              <div className="relative h-48 md:h-62 overflow-hidden bg-gray-100">
+              <div className="relative h-48 md:h-62 overflow-hidden bg-gray-100 flex-shrink-0">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={office.img}
-                  alt={office.city}
+                  alt={office.address}
                   loading="lazy"
                   decoding="async"
                   className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
@@ -212,56 +217,71 @@ export default function Offices({
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute bottom-3 left-3 bg-black/50 backdrop-blur-sm px-2 py-1 rounded-lg">
                   <span className="text-white text-xs font-medium">
-                    {office.location}
+                    {office.address}
                   </span>
                 </div>
               </div>
 
-              <div className="p-4 md:p-5 space-y-3">
+              <div className="p-4 md:p-5 space-y-3 flex flex-col flex-1">
                 <div className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-[#1F2288]" />
+                  <MapPin className="w-5 h-5 text-[#1F2288] flex-shrink-0" />
                   <h4 className="text-lg md:text-xl font-bold text-[#110713]">
-                    {office.city}
+                    {office.address}
                   </h4>
                 </div>
 
-                <p className="text-sm text-[#66556B] leading-relaxed min-h-[70px]">
+                <p className="text-sm text-[#66556B] leading-relaxed flex-1 min-h-[70px]">
                   {office.desc}
                 </p>
-                {office.phones && office.phones.length > 0 && (
-                  <div className="space-y-2 pt-2 border-t border-[#E5E7EB]">
-                    <div className="flex items-center justify-between border-b border-[#E8DFEB] pb-2">
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4 text-[#1F2288]" />
-                        <p className="text-xs font-semibold text-[#1F2288] uppercase tracking-wider">
-                          Phone Numbers
-                        </p>
-                      </div>
+
+                {/* Phone Numbers Section with Fixed Height */}
+                <div className="space-y-2 pt-2 border-t border-[#E5E7EB]">
+                  <div className="flex items-center justify-between border-b border-[#E8DFEB] pb-2">
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-4 h-4 text-[#1F2288]" />
+                      <p className="text-xs font-semibold text-[#1F2288] uppercase tracking-wider">
+                        Phone Numbers
+                      </p>
                     </div>
+                    <span className="text-xs text-[#66556B]">
+                      {office.phones.length} {office.phones.length === 1 ? 'number' : 'numbers'}
+                    </span>
+                  </div>
+
+                  {/* Fixed height container for phone numbers */}
+                  <div className="space-y-2 min-h-[80px]">
                     {office.phones.map((phone, pi) => (
-                      <div key={pi} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <Phone className="w-4 h-4 text-[#1F2288]" />
-                          <span className="text-sm font-medium text-[#110713]">
-                            {phone.trim()}
-                          </span>
-                        </div>
+                      <div key={pi} className="flex items-center gap-2">
+                        <Phone className="w-4 h-4 text-[#1F2288] flex-shrink-0" />
+                        <span className="text-sm font-medium text-[#110713]">
+                          {phone.trim()}
+                        </span>
+                      </div>
+                    ))}
+                    
+                    {/* Empty placeholder rows to maintain consistent height */}
+                    {Array.from({ length: MAX_PHONES - office.phones.length }).map((_, idx) => (
+                      <div key={`empty-${idx}`} className="flex items-center gap-2 opacity-0">
+                        <Phone className="w-4 h-4 text-[#1F2288] flex-shrink-0" />
+                        <span className="text-sm font-medium text-[#110713]">
+                          &nbsp;
+                        </span>
                       </div>
                     ))}
                   </div>
-                )}
+                </div>
 
-                <div className="flex items-center gap-2 pt-2">
-                  <Mail className="w-4 h-4 text-[#1F2288]" />
+                <div className="flex items-center gap-2 pt-1">
+                  <Mail className="w-4 h-4 text-[#1F2288] flex-shrink-0" />
                   <a
                     href={`mailto:${office.email}`}
-                    className="text-sm text-[#66556B] hover:text-[#1F2288] transition-colors"
+                    className="text-sm text-[#66556B] hover:text-[#1F2288] transition-colors truncate"
                   >
                     {office.email}
                   </a>
                 </div>
 
-                <div className="flex gap-2 mt-4">
+                <div className="flex gap-2 mt-2 pt-2">
                   <button
                     onClick={() => {
                       if (onContactClick) onContactClick(office.city);

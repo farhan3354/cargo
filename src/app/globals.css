@@ -79,6 +79,11 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-sans);
+    /* Break long, unbroken words so content never overflows its container */
+    overflow-wrap: break-word;
+    word-break: break-word;
+    -webkit-hyphens: auto;
+    hyphens: auto;
   }
 
   h1,

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Trash2, Edit2, Skull } from "lucide-react";
+import { Trash2, Edit2, Phone, MapPin } from "lucide-react";
 import ConfirmDialog from "@/components/Admin/ConfirmDialog";
 import EditOfficeForm from "./EditOfficeForm";
 import { deleteOffice, hardDeleteOffice } from "@/app/actions/admin";
@@ -13,7 +13,11 @@ type Office = {
   name: string;
   email: string;
   phone?: string;
+  phones?: string[];
+  description?: string;
   address?: string;
+  location?: string;
+  country?: string;
   imageUrl?: string;
 };
 
@@ -86,60 +90,85 @@ export default function OfficesList({ initialOffices }: Props) {
         </div>
       ) : (
         <ul className="divide-y divide-[#E5E7EB]">
-          {offices.map((office) => (
-            <li
-              key={office.id}
-              className="p-6 flex gap-6 items-start hover:bg-[#F9F7FA] transition-colors"
-            >
-              {office.imageUrl ? (
-                <div className="w-24 h-24 relative rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
-                  <Image src={office.imageUrl} alt={office.name} fill className="object-cover" />
+          {offices.map((office) => {
+            const phones = office.phones && office.phones.length > 0
+              ? office.phones
+              : office.phone
+                ? office.phone.split(",").map((p) => p.trim())
+                : [];
+
+            return (
+              <li
+                key={office.id}
+                className="p-6 flex gap-6 items-start hover:bg-[#F9F7FA] transition-colors"
+              >
+                {office.imageUrl ? (
+                  <div className="w-24 h-24 relative rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
+                    <Image src={office.imageUrl} alt={office.name} fill className="object-cover" />
+                  </div>
+                ) : (
+                  <div className="w-24 h-24 rounded-xl bg-[#F9F7FA] flex items-center justify-center text-[#66556B] text-sm">
+                    No Image
+                  </div>
+                )}
+                <div className="flex-1 space-y-1">
+                  <h3 className="text-lg font-bold text-[#110713]">{office.name}</h3>
+
+                  {office.description && (
+                    <p className="text-sm text-[#66556B] italic">{office.description}</p>
+                  )}
+
+                  <p className="text-sm text-[#66556B]"><strong>Email:</strong> {office.email}</p>
+
+                  {phones.length > 0 && (
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Phone className="w-3.5 h-3.5 text-[#1F2288]" />
+                      {phones.map((p, i) => (
+                        <span key={i} className="text-sm text-[#66556B]">
+                          {p}{i < phones.length - 1 ? "," : ""}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {office.location && (
+                    <div className="flex items-center gap-1">
+                      <MapPin className="w-3.5 h-3.5 text-[#1F2288]" />
+                      <span className="text-sm text-[#66556B]">{office.location}</span>
+                      {office.country && (
+                        <span className="text-xs text-[#66556B] bg-[#F3F4F6] rounded px-1.5 py-0.5 ml-1">
+                          {office.country}
+                        </span>
+                      )}
+                    </div>
+                  )}
+
+                  {office.address && <p className="text-sm text-[#66556B]"><strong>Address:</strong> {office.address}</p>}
                 </div>
-              ) : (
-                <div className="w-24 h-24 rounded-xl bg-[#F9F7FA] flex items-center justify-center text-[#66556B] text-sm">
-                  No Image
+                <div className="flex gap-2 flex-col">
+                  <button
+                    type="button"
+                    title="Edit"
+                    className="h-8 w-8 flex items-center justify-center rounded bg-[#1F2288] text-white hover:bg-[#1F2288]/90"
+                    onClick={() => openEdit(office)}
+                  >
+                    <Edit2 className="w-4 h-4" />
+                  </button>
+                  <button
+                    type="button"
+                    title="Hide from website (soft delete)"
+                    className="h-8 w-8 flex items-center justify-center rounded bg-orange-500 text-white hover:bg-orange-600"
+                    onClick={() => {
+                      setConfirmOpen(true);
+                      setSelectedId(office.id);
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
-              )}
-              <div className="flex-1 space-y-1">
-                <h3 className="text-lg font-bold text-[#110713]">{office.name}</h3>
-                <p className="text-sm text-[#66556B]"><strong>Email:</strong> {office.email}</p>
-                {office.phone && <p className="text-sm text-[#66556B]"><strong>Phone:</strong> {office.phone}</p>}
-                {office.address && <p className="text-sm text-[#66556B]"><strong>Address:</strong> {office.address}</p>}
-              </div>
-              <div className="flex gap-2 flex-col">
-                <button
-                  type="button"
-                  title="Edit"
-                  className="h-8 w-8 flex items-center justify-center rounded bg-[#1F2288] text-white hover:bg-[#1F2288]/90"
-                  onClick={() => openEdit(office)}
-                >
-                  <Edit2 className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  title="Hide from website (soft delete)"
-                  className="h-8 w-8 flex items-center justify-center rounded bg-orange-500 text-white hover:bg-orange-600"
-                  onClick={() => {
-                    setConfirmOpen(true);
-                    setSelectedId(office.id);
-                  }}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-                <button
-                  type="button"
-                  title="Permanently delete from database"
-                  className="h-8 w-8 flex items-center justify-center rounded bg-red-700 text-white hover:bg-red-800"
-                  onClick={() => {
-                    setHardConfirmOpen(true);
-                    setSelectedId(office.id);
-                  }}
-                >
-                  <Skull className="w-4 h-4" />
-                </button>
-              </div>
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       )}
 
@@ -147,16 +176,8 @@ export default function OfficesList({ initialOffices }: Props) {
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
         title="Hide Office"
-        description="This will hide the office from your website (soft delete). The record stays in the database. Use the red skull button to permanently delete."
+        description="This will hide the office from your website (soft delete). The record stays in the database."
         onConfirm={onConfirmSoft}
-      />
-
-      <ConfirmDialog
-        open={hardConfirmOpen}
-        onOpenChange={setHardConfirmOpen}
-        title="Permanently Delete Office"
-        description="⚠️ This will PERMANENTLY remove this office from the database. This cannot be undone. Are you absolutely sure?"
-        onConfirm={onConfirmHard}
       />
 
       {editOpen && officeToEdit && (

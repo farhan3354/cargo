@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import { Office } from "@prisma/client";
+import type { Office } from "@/lib/api";
 
 const Offices = dynamic(() => import("@/components/Home/Offices"), {
   ssr: false,

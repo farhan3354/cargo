@@ -49,6 +49,7 @@ export function VideoForm() {
 
       <div className="space-y-2">
         <Label>Video File</Label>
+        <p className="text-xs text-red-500 font-medium">Recommended video format: MP4 (16:9 aspect ratio), file size under 50MB.</p>
         {videoUrl ? (
           <div className="relative w-full h-32 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
             <video src={videoUrl} className="object-cover w-full h-full" muted />
